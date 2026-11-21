@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>재재목 계산기</title>
+<style>
+  @font-face{font-family:"Pretendard";src:url("fonts/PretendardVariable.woff2") format("woff2-variations"),url("fonts/PretendardVariable.woff2") format("woff2");font-weight:45 920;font-style:normal;font-display:swap}
+  :root{--bg:#161719;--card:#1f2023;--ink:#f2f0ed;--muted:#a19e99;--line:#313338;--accent:#e2793a;--accent-ink:#161719;--warn:#ff9a8a;--soft:#292a2e;--gold2:#f29a5c}
+  body{background:radial-gradient(1200px 600px at 50% -10%,#26272b 0%,var(--bg) 60%) fixed,var(--bg)}
+  *{box-sizing:border-box}
+  body{margin:0;color:var(--ink);font-family:"Pretendard",system-ui,-apple-system,"Apple SD Gothic Neo",sans-serif;line-height:1.5}
+  .wrap{max-width:1080px;margin:0 auto;padding:20px 14px 60px}
+  h1{font-size:22px;margin:4px 0}
+  .sub{color:var(--muted);font-size:14px;margin:0 0 18px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:16px}
+  h2{font-size:16px;margin:0 0 12px}
+  label{display:block;font-size:13px;color:var(--muted);margin-bottom:4px}
+  input,select{width:100%;padding:7px 8px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font-size:15px;font-family:inherit}
+  .scroll{overflow-x:auto}
+  table{width:100%;border-collapse:collapse}
+  th{font-size:12px;color:var(--muted);text-align:left;padding:6px;font-weight:600;white-space:nowrap;border-bottom:1px solid var(--line)}
+  td{padding:5px 6px;vertical-align:middle;border-bottom:1px solid var(--line)}
+  #parts td{border-bottom:none}
+  #parts input.n{min-width:100px}
+  #parts input.num{min-width:68px}
+  #parts select{min-width:100px}
+  td.r,th.r{text-align:right;white-space:nowrap}
+  button{font:inherit;cursor:pointer;transition:border-color .2s,background .2s;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:8px 14px}
+  button.small{padding:4px 10px;font-size:13px}
+  .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:10px}
+  .hint{font-size:13px;color:var(--muted)}
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:16px}
+  .stat{background:var(--soft);border-radius:10px;padding:10px 12px}
+  .stat b{display:block;font-size:22px}
+  .stat span{font-size:12px;color:var(--muted)}
+  .tag{display:inline-block;background:var(--soft);border-radius:6px;padding:1px 7px;font-weight:700;white-space:nowrap}
+  .warn{color:var(--warn);font-size:12px;display:block}
+  tfoot td{font-weight:700;border-bottom:none}
+  pre{white-space:pre-wrap;background:var(--soft);border-radius:8px;padding:10px;font-size:13px;margin:8px 0 0}
+  details{margin-top:10px}
+  details summary{cursor:pointer;color:var(--muted);font-size:13px}
+  details .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:10px}
+
+  button:hover{border-color:var(--accent)}
+  input:focus,select:focus{outline:2px solid var(--accent);outline-offset:-1px}
+  .tag{color:var(--gold2)}
+  .topbar{display:flex;justify-content:space-between;align-items:center;gap:10px}
+  .linkbtn{background:none;border:none;color:var(--muted);font-size:13px;padding:4px 0;text-decoration:underline}
+  [hidden]{display:none!important}
+
+
+  /* ---------- 프리미엄 스타일 ---------- */
+  body{font-family:"Pretendard",system-ui,-apple-system,"Apple SD Gothic Neo",sans-serif;font-weight:400;letter-spacing:-.005em;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1100px;padding:56px 32px 28px}
+  .topbar{align-items:flex-start;padding-bottom:36px;margin-bottom:8px;border-bottom:1px solid var(--line)}
+  .eyebrow,.kicker{font-family:"Pretendard",system-ui,-apple-system,"Apple SD Gothic Neo",sans-serif;font-size:11px;letter-spacing:.35em;color:var(--accent);font-weight:500;margin-bottom:14px}
+  h1{font-family:"Pretendard",system-ui,-apple-system,"Apple SD Gothic Neo",sans-serif;font-weight:600;font-size:clamp(30px,4vw,42px);letter-spacing:-.02em;margin:0 0 10px}
+  .big{font-family:"Pretendard",system-ui,-apple-system,"Apple SD Gothic Neo",sans-serif;font-weight:600;letter-spacing:-.02em}
+  .sub{font-size:14px;font-weight:300;margin:0;color:var(--muted)}
+  .linkbtn{text-decoration:none;font-size:13px;color:var(--muted);letter-spacing:.02em;white-space:nowrap;flex-shrink:0}
+  .linkbtn:hover{color:var(--accent)}
+  .card{background:none;border:none;border-radius:0;padding:44px 0 12px;margin:0;border-bottom:1px solid var(--line)}
+  h2{display:flex;align-items:baseline;gap:14px;font-family:"Pretendard",system-ui,-apple-system,"Apple SD Gothic Neo",sans-serif;font-weight:600;font-size:20px;letter-spacing:-.01em;margin:0 0 24px}
+  h2 .no{font-family:"Pretendard",system-ui,-apple-system,"Apple SD Gothic Neo",sans-serif;font-size:12px;font-weight:500;color:var(--accent);letter-spacing:.1em}
+  th{font-family:"Pretendard",system-ui,-apple-system,"Apple SD Gothic Neo",sans-serif;font-size:12px;font-weight:500;letter-spacing:.02em;color:#86837e;padding:10px 8px;border-bottom:1px solid var(--line)}
+  th small{font-family:"Pretendard",system-ui,-apple-system,"Apple SD Gothic Neo",sans-serif;letter-spacing:0;text-transform:none;font-weight:300;color:#6b6964}
+  td{padding:12px 8px;border-bottom:1px solid #26272b;font-variant-numeric:tabular-nums}
+  #parts td{padding:6px 8px}
+  input,select{background:transparent;border:none;border-bottom:1px solid var(--line);border-radius:0;padding:9px 2px;font-size:15px;font-variant-numeric:tabular-nums;transition:border-color .2s}
+  input:hover,select:hover{border-bottom-color:#4a4c52}
+  input:focus,select:focus{outline:none;border-bottom-color:var(--accent)}
+  select{appearance:none;-webkit-appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),linear-gradient(135deg,var(--muted) 50%,transparent 50%);background-position:calc(100% - 10px) 55%,calc(100% - 6px) 55%;background-size:4px 4px;background-repeat:no-repeat;padding-right:22px}
+  select option{background:var(--card);color:var(--ink)}
+  input::placeholder{color:#5c5a56}
+  button{border-radius:2px;background:transparent;border:1px solid var(--line);font-size:13px;letter-spacing:.02em;padding:10px 18px;color:var(--ink)}
+  button:hover{border-color:var(--accent);color:var(--accent)}
+  button.small.del{border:none;color:#6b6964;padding:4px 8px}
+  button.small.del:hover{color:var(--accent)}
+  .row{margin-top:20px}
+  .hint{font-size:12.5px;font-weight:300;color:#8a8782}
+  details{margin:22px 0 20px}
+  details summary{font-size:13px;letter-spacing:.02em;color:var(--muted)}
+  details .grid{gap:20px 28px;margin-top:18px}
+  label{font-size:12px;color:var(--muted)}
+  .stats{grid-template-columns:repeat(3,1fr);gap:0;margin:0 0 32px;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .stat{background:none;border-radius:0;padding:22px 24px;border-left:1px solid var(--line)}
+  .stat:first-child{border-left:none;padding-left:0}
+  .stat b{font-family:"Pretendard",system-ui,-apple-system,"Apple SD Gothic Neo",sans-serif;font-weight:500;font-size:32px;letter-spacing:-.02em;margin-bottom:4px;font-variant-numeric:tabular-nums}
+  .stat.main b{color:var(--accent)}
+  .stat span{font-size:12.5px;letter-spacing:.02em;color:#86837e}
+  .tag{background:none;border:1px solid rgba(226,121,58,.45);color:var(--accent);border-radius:2px;padding:1px 8px;font-family:"Pretendard",system-ui,-apple-system,"Apple SD Gothic Neo",sans-serif;font-weight:500;font-size:13px}
+  .warn{color:#c99272;font-size:11.5px;font-weight:300;margin-top:4px}
+  tfoot td{border-top:1px solid var(--line);font-weight:600;padding-top:14px}
+  pre{background:none;border:1px solid var(--line);border-radius:0;padding:16px 18px;font-family:"Pretendard",system-ui,-apple-system,"Apple SD Gothic Neo",sans-serif;font-size:12.5px;line-height:1.8;color:#cfccc7}
+  @media (max-width:640px){.wrap{padding:36px 18px 22px}.stats{grid-template-columns:1fr}.stat{border-left:none;border-top:1px solid var(--line);padding-left:0}.stat:first-child{border-top:none}}
+  .combo{position:relative}
+  .combo input{padding-right:24px}
+  .caret,.sbtn{background:transparent;border:none;border-radius:0;cursor:pointer}
+  .caret{position:absolute;right:0;top:0;bottom:0;width:24px;padding:0}
+  .caret::after,.sbtn::after{content:"";position:absolute;right:8px;top:50%;width:5px;height:5px;border-right:1.5px solid var(--muted);border-bottom:1.5px solid var(--muted);transform:translateY(-70%) rotate(45deg)}
+  .caret:hover::after,.sbtn:hover::after{border-color:var(--accent)}
+  .sbtn{position:relative;width:100%;min-width:110px;text-align:left;color:var(--ink);font-size:15px;padding:9px 24px 9px 2px;border-bottom:1px solid var(--line);letter-spacing:0;white-space:nowrap}
+  .sbtn:hover{color:var(--ink);border-color:transparent;border-bottom-color:#4a4c52}
+  .menu{position:absolute;z-index:50;background:var(--accent);color:#161719;border-radius:3px;padding:4px;box-shadow:0 14px 40px rgba(0,0,0,.45);max-height:280px;overflow:auto;font-size:14.5px}
+  .menu .mi{padding:9px 14px;border-radius:2px;cursor:pointer;white-space:nowrap}
+  .menu .mi:hover,.menu .mi.hi{background:rgba(255,255,255,.22)}
+  .menu .mi.cur{font-weight:700;background:rgba(0,0,0,.14)}
+  button.btn-accent{background:var(--accent);border-color:var(--accent);color:#161719;font-weight:600}
+  button.btn-accent:hover{background:var(--gold2);border-color:var(--gold2);color:#161719}
+  .calcrow{display:flex;justify-content:flex-end;margin:6px 0 24px}
+  button.btn-calc{padding:13px 34px;font-size:15px;font-weight:700;letter-spacing:.04em}
+  #app:not([hidden]){display:flex;flex-direction:column;min-height:100vh}
+  .credit{margin:0;padding:64px 0 8px;text-align:center;font-size:12px;letter-spacing:.12em;color:#6f6c67}
+  #result.empty{min-height:100vh}
+  .credit b{color:#fff;font-weight:500}
+  #intro .intro-credit{position:absolute;left:0;right:0;bottom:12px;padding:0}
+  /* ---------- 모바일 ---------- */
+  @media (max-width:720px){
+    .wrap{padding:28px 16px 22px}
+    .topbar{padding-bottom:24px}
+    h1{font-size:28px}
+    .sub{font-size:13px}
+    .card{padding:32px 0 8px}
+    h2{font-size:18px;margin-bottom:16px}
+    input,select,.sbtn{font-size:16px}
+    .scroll{overflow:visible}
+    #parts thead,.rtable thead{display:none}
+    #parts,#parts tbody,.rtable,.rtable tbody,.rtable tfoot{display:block;width:100%}
+    #parts tbody{display:flex!important;flex-direction:column;gap:12px}
+    #parts tr{display:grid;grid-template-columns:repeat(3,1fr);gap:12px 14px;padding:14px 14px 16px;border:1px solid #3a3c42;border-radius:6px;background:rgba(255,255,255,.02);position:relative}
+    #parts tr:focus-within{border-color:rgba(226,121,58,.6)}
+    #parts td{display:block;padding:0;border:none;min-width:0}
+    #parts td::before,.rtable td[data-label]::before{content:attr(data-label);display:block;font-size:11.5px;color:#86837e;margin-bottom:2px;text-align:left;font-weight:400}
+    #parts td.c-name{grid-column:1/-1;padding-right:44px}
+    #parts td.c-del{position:absolute;top:10px;right:6px}
+    #parts td.c-del::before{content:none}
+    #parts input.n,#parts input.num,#parts select,.sbtn{min-width:0!important;width:100%}
+    button.small.del{font-size:18px;padding:8px 10px}
+    .row button{flex:1 1 auto;padding:12px 10px}
+    .calcrow button.btn-calc{width:100%;padding:15px}
+    details .grid{grid-template-columns:1fr 1fr;gap:16px}
+    .stat b{font-size:28px}
+    .rtable tr{display:grid;grid-template-columns:1fr 1fr;gap:10px 16px;padding:16px 0;border-bottom:1px solid #26272b}
+    .rtable td{display:block;padding:0;border:none;text-align:left!important;white-space:normal}
+    .rtable td.c-title{grid-column:1/-1;font-size:16px;font-weight:600}
+    .rtable td.c-wide{grid-column:1/-1}
+    .rtable td.c-key b,.rtable td.c-key{color:var(--accent)}
+    .rtable td.c-empty{display:none}
+    .rtable tfoot tr{border-top:1px solid var(--line);border-bottom:none}
+    .rtable tfoot td{border:none;padding:0}
+    pre{font-size:12px;padding:12px}
+    .credit{font-size:11px;letter-spacing:.06em;padding-top:48px}
+    #intro .intro-credit{font-size:10.5px;letter-spacing:.04em}
+    .cta{padding:15px 44px}
+  }
+  /* ---------- 시작 화면 ---------- */
+  #intro{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;gap:18px}
+  .kicker{color:var(--accent);font-size:13px;letter-spacing:.3em;font-weight:700}
+  .big{font-size:clamp(34px,7vw,60px);font-weight:800;line-height:1.15;margin:0;letter-spacing:-.01em}
+  .lead{color:var(--muted);font-size:clamp(15px,2.4vw,18px);margin:0}
+  #intro{overflow:hidden;background:var(--bg)}
+  #intro::before,#intro::after{content:"";position:absolute;inset:-25%;pointer-events:none;z-index:0}
+  #intro::before{background:radial-gradient(40% 35% at 30% 35%,rgba(226,121,58,.13),transparent 70%),radial-gradient(45% 40% at 72% 68%,rgba(120,124,135,.16),transparent 70%);animation:tone 16s ease-in-out infinite alternate}
+  #intro::after{background:radial-gradient(35% 30% at 65% 25%,rgba(242,154,92,.08),transparent 70%),radial-gradient(40% 35% at 25% 75%,rgba(70,72,80,.25),transparent 70%);animation:tone2 22s ease-in-out infinite alternate}
+  @keyframes tone{0%{transform:translate(-4%,-3%) scale(1)}100%{transform:translate(5%,4%) scale(1.12)}}
+  @keyframes tone2{0%{transform:translate(4%,3%) scale(1.08);opacity:.6}100%{transform:translate(-5%,-4%) scale(1);opacity:1}}
+  #intro>*{position:relative;z-index:1}
+  .cta{margin-top:18px;background:var(--accent);color:var(--accent-ink);border:none;border-radius:999px;padding:16px 48px;font-size:18px;font-weight:800;box-shadow:0 0 0 0 rgba(226,121,58,.5);animation:pulse 2.4s infinite}
+  .cta:hover{background:var(--gold2);border:none}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(226,121,58,.45)}70%{box-shadow:0 0 0 18px rgba(226,121,58,0)}100%{box-shadow:0 0 0 0 rgba(226,121,58,0)}}
+  @media (prefers-reduced-motion: reduce){#intro::before,#intro::after,.cta{animation:none}}
+</style>
+</head>
+<body>
+<section id="intro" aria-label="재재목 계산기 시작 화면">
+  <div class="kicker">WOODWORK</div>
+  <h1 class="big">재재목 계산기</h1>
+  <p class="lead">치수 넣고, 사이 받고, 주문하세요</p>
+  <button class="cta" id="enter">시작하기</button>
+</section>
+<div class="wrap" id="app" hidden>
+  <header class="topbar"><div><div class="eyebrow">WOODWORK</div><h1>재재목 계산기</h1><p class="sub">부재 치수를 넣으면 재재목을 두께별로 몇 사이 사야 하는지 계산해드릴게요.</p></div><button class="linkbtn" id="toIntro">← 처음 화면</button></header>
+
+  <div class="card">
+    <h2><span class="no">01</span>부재 목록</h2>
+    <div class="scroll">
+    <table id="parts">
+      <thead><tr><th>부재 이름</th><th>가로 (mm)<br><small>완성 폭</small></th><th>세로 (mm)<br><small>결 방향</small></th><th>두께 (T)</th><th>개수</th><th>재재목</th><th>폭 집성<br><small>쪽수</small></th><th></th></tr></thead>
+      <tbody></tbody>
+    </table>
+    </div>
+    <div class="row">
+      <button id="addRow" class="btn-accent">+ 부재 추가</button>
+      <button id="sample">예시 불러오기</button>
+      <button id="clear" class="btn-accent">전체 지우기</button>
+    </div>
+    <p class="hint" style="margin:10px 0 0">재재목은 '자동'이면 두께에 맞춰 골라 줘요.</p>
+
+    <details>
+      <summary>세부 설정</summary>
+      <div class="grid">
+        <div><label>두께 대패 여유 (T)</label><input type="number" id="aT" value="5" min="0" step="0.5"></div>
+        <div><label>세로(길이) 여유 (mm)</label><input type="number" id="aL" value="50" min="0" step="5"></div>
+        <div><label>가로(폭) 여유 (mm)</label><input type="number" id="aW" value="10" min="0" step="1"></div>
+        <div><label>로스율 (%)</label><input type="number" id="loss" value="25" min="0" step="5"></div>
+      <div><label>폭 집성 기준 (mm)<br><small>이 폭을 넘으면 자동 분할</small></label><input type="number" id="maxW" value="200" min="10" step="10"></div>
+      <div><label>최소 구매 폭 (mm)<br><small>엔우드 기준 5인치=127mm</small></label><input type="number" id="minW" value="127" min="1" step="1"></div>
+      </div>
+      <p class="hint" style="margin:8px 0 0">
+        · 재재목 두께: 완성 T + 대패 여유보다 두꺼운 규격 (엔우드 실측 4/4=26T, 5/4=32T, 6/4=38T, 8/4=52T)<br>
+        · 폭 집성: 완성 폭이 기준보다 넓으면 자동으로 쪽을 나눠요<br>
+        · 최소 구매 폭보다 좁은 부재는 최소 폭으로 계산해요<br>
+        · 공식: 두께"×폭"×길이'÷12×0.707 (엔우드 기준)
+      </p>
+    </details>
+    <div class="calcrow"><button id="calc" class="btn-accent btn-calc">계산하기</button></div>
+  </div>
+
+  <div id="result"></div>
+  <footer class="credit"><b>개발자</b> 조준혁 | cho-01000@naver.com</footer>
+</div>
+
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var tbody=document.querySelector('#parts tbody');
+  var STORE='lumber-saisu-v8';
+  // mm: 엔우드 고시 실측 두께(공칭 치수보다 두꺼움, 대패 전 기준). 10/4·12/4는 공식 수치가 없어 8/4의 증가율로 추정.
+  var STOCK=[{q:4,label:'4/4',mm:26},{q:5,label:'5/4',mm:32},{q:6,label:'6/4',mm:38},{q:8,label:'8/4',mm:52},{q:10,label:'10/4',mm:65,est:true},{q:12,label:'12/4',mm:78,est:true}];
+  STOCK.forEach(function(s){ s.inch=s.q/4; });
+  var FT_MM=304.8;
+  var SAMPLE=[
+    {n:'상판',w:600,l:1000,t:20,q:1,s:'auto',sp:''},
+    {n:'다리',w:50,l:700,t:30,q:4,s:'auto',sp:''},
+    {n:'에이프론',w:30,l:500,t:20,q:1,s:'auto',sp:''}
+  ];
+  var SAI_FACTOR=0.707; // 엔우드 고시 공식: 재적 = 두께(인치)×폭(인치)×길이(피트)/12 × 0.707
+  var MIN_WIDTH_MM=127; // 최소 구매 폭 5인치(엔우드 고시)
+
+  function ftMm(mm){ return f2(mm/FT_MM)+'ft ('+f1(mm)+'mm)'; }
+
+  function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+  function f1(n){return (Math.round(n*10)/10).toLocaleString('ko-KR')}
+  function f2(n){return (Math.round(n*100)/100).toLocaleString('ko-KR',{minimumFractionDigits:2,maximumFractionDigits:2})}
+
+  var NAMES=['상판','좌판','다리','판재','각재','에이프론'];
+  function stockLabel(v){ if(v==='auto') return '자동'; var st=STOCK.filter(function(x){return x.label===v})[0]; return st?st.label+' ('+f1(st.mm)+'T'+(st.est?' 추정':'')+')':v; }
+  function addRow(p){
+    p=p||{n:'',w:'',l:'',t:'',q:1,s:'auto',sp:''};
+    var tr=document.createElement('tr');
+    var opts='<option value="auto">자동</option>'+STOCK.map(function(s){return '<option value="'+s.label+'">'+s.label+'</option>'}).join('');
+    tr.innerHTML='<td class="c-name" data-label="부재"><div class="combo"><input class="n" placeholder="부재 선택" autocomplete="off" value="'+esc(p.n)+'"><button type="button" class="caret nbtn" aria-label="부재 목록 열기" tabindex="-1"></button></div></td>'+
+      '<td data-label="가로 (mm)"><input class="num w" type="number" min="1" value="'+esc(p.w)+'"></td>'+
+      '<td data-label="세로 (mm)"><input class="num l" type="number" min="1" value="'+esc(p.l)+'"></td>'+
+      '<td data-label="두께 (T)"><input class="num t" type="number" min="1" step="0.5" value="'+esc(p.t)+'"></td>'+
+      '<td data-label="개수"><input class="num q" type="number" min="1" value="'+esc(p.q)+'" style="min-width:52px"></td>'+
+      '<td data-label="재재목"><select class="s" hidden>'+opts+'</select><button type="button" class="sbtn"></button></td>'+
+      '<td data-label="폭 집성"><input class="num sp" type="number" min="1" placeholder="자동" value="'+esc(p.sp)+'" style="min-width:56px" title="완성 폭을 몇 쪽으로 나눠 붙일지. 비워 두면 폭 집성 기준으로 자동 계산"></td>'+
+      '<td class="c-del"><button class="small del" title="삭제">✕</button></td>';
+    var sel=tr.querySelector('.s'), sbtn=tr.querySelector('.sbtn'), nin=tr.querySelector('.n');
+    sel.value=p.s||'auto'; sbtn.textContent=stockLabel(sel.value);
+    sbtn.onclick=function(e){ e.stopPropagation();
+      openMenu(sbtn, [{v:'auto',t:'자동'}].concat(STOCK.map(function(x){return {v:x.label,t:stockLabel(x.label)}})), sel.value,
+        function(v){ sel.value=v; sbtn.textContent=stockLabel(v); update(); }); };
+    function nameMenu(all){ var q=all?'':nin.value.trim();
+      var list=NAMES.filter(function(n){return !q||n.indexOf(q)>=0}).map(function(n){return {v:n,t:n}});
+      if(!list.length){ closeMenu(); return; }
+      openMenu(nin, list, nin.value, function(v){ nin.value=v; update(); }); }
+    tr.querySelector('.nbtn').onclick=function(e){ e.stopPropagation(); if(menuFor===nin) closeMenu(); else { nameMenu(true); nin.focus(); } };
+    nin.addEventListener('focus',function(){ nameMenu(true); });
+    nin.addEventListener('input',function(){ nameMenu(false); });
+    tr.querySelector('.del').onclick=function(){tr.remove();closeMenu();update();};
+    tbody.appendChild(tr);
+  }
+
+  // ---------- 주황 드롭다운 ----------
+  var menu=document.createElement('div'); menu.className='menu'; menu.hidden=true; document.body.appendChild(menu);
+  var menuFor=null, menuPick=null, menuIdx=-1;
+  function openMenu(anchor, items, cur, pick){
+    menuFor=anchor; menuPick=pick; menuIdx=-1;
+    menu.innerHTML=items.map(function(it,i){return '<div class="mi'+(it.v===cur?' cur':'')+'" data-v="'+esc(it.v)+'">'+esc(it.t)+'</div>'}).join('');
+    var r=anchor.getBoundingClientRect();
+    menu.style.minWidth=Math.max(r.width,140)+'px'; menu.hidden=false;
+    var top=r.bottom+window.scrollY+4, mh=menu.offsetHeight;
+    if(r.bottom+mh+8>window.innerHeight && r.top>mh+8) top=r.top+window.scrollY-mh-4;
+    var left=Math.min(r.left, window.innerWidth-menu.offsetWidth-8); menu.style.left=(Math.max(8,left)+window.scrollX)+'px'; menu.style.top=top+'px';
+  }
+  function closeMenu(){ menu.hidden=true; menuFor=null; menuPick=null; }
+  menu.addEventListener('mousedown',function(e){ e.preventDefault(); });
+  menu.addEventListener('click',function(e){ var it=e.target.closest('.mi'); if(!it||!menuPick) return; var f=menuPick; closeMenu(); f(it.getAttribute('data-v')); });
+  document.addEventListener('click',function(e){ if(menu.hidden) return; if(menu.contains(e.target)||e.target===menuFor) return; closeMenu(); });
+  document.addEventListener('keydown',function(e){
+    if(menu.hidden) return;
+    var its=menu.querySelectorAll('.mi');
+    if(e.key==='Escape'){ closeMenu(); }
+    else if(e.key==='ArrowDown'||e.key==='ArrowUp'){ e.preventDefault(); menuIdx=(menuIdx+(e.key==='ArrowDown'?1:-1)+its.length)%its.length; [].forEach.call(its,function(x,i){x.classList.toggle('hi',i===menuIdx)}); }
+    else if(e.key==='Enter'&&menuIdx>=0){ e.preventDefault(); its[menuIdx].click(); }
+  });
+  window.addEventListener('resize',closeMenu);
+  document.addEventListener('focusin',function(e){ if(!menu.hidden && e.target!==menuFor && !menu.contains(e.target)) closeMenu(); });
+
+  function rows(){
+    return Array.prototype.map.call(tbody.querySelectorAll('tr'),function(tr){
+      return {n:tr.querySelector('.n').value,w:tr.querySelector('.w').value,l:tr.querySelector('.l').value,t:tr.querySelector('.t').value,q:tr.querySelector('.q').value,s:tr.querySelector('.s').value,sp:tr.querySelector('.sp').value};
+    });
+  }
+  function num(id,d){var v=parseFloat($(id).value);return isFinite(v)&&v>=0?v:d}
+  function settings(){ return {aT:num('aT',0),aL:num('aL',0),aW:num('aW',0),loss:num('loss',0),maxW:num('maxW',200)||200,minW:num('minW',MIN_WIDTH_MM)||MIN_WIDTH_MM}; }
+
+  function save(){try{localStorage.setItem(STORE,JSON.stringify({set:{aT:$('aT').value,aL:$('aL').value,aW:$('aW').value,loss:$('loss').value,maxW:$('maxW').value,minW:$('minW').value},rows:rows()}))}catch(e){}}
+  function load(){
+    try{
+      var d=JSON.parse(localStorage.getItem(STORE)||'null');
+      if(d&&d.rows&&d.rows.length){
+        ['aT','aL','aW','loss','maxW','minW'].forEach(function(k){ if(d.set&&d.set[k]!=null) $(k).value=d.set[k]; });
+        d.rows.forEach(addRow); return;
+      }
+    }catch(e){}
+    addRow();
+  }
+
+  function pickStock(t,aT,manual){
+    var need=t+aT;
+    if(manual&&manual!=='auto'){
+      var s=STOCK.filter(function(x){return x.label===manual})[0];
+      return {stock:s,layers:1,short:s.mm<need-1e-9,need:need};
+    }
+    for(var i=0;i<STOCK.length;i++){ if(STOCK[i].mm>=need-1e-9) return {stock:STOCK[i],layers:1,short:false,need:need}; }
+    var s8=STOCK.filter(function(x){return x.label==='8/4'})[0];
+    var layerFinal=s8.mm-aT;
+    var n=Math.ceil(t/layerFinal);
+    return {stock:s8,layers:n,short:false,need:need,laminated:true};
+  }
+
+  var shown=false;
+  function update(){
+    save();
+    var S=settings(), out=$('result');
+    out.classList.toggle('empty',!shown);
+    if(!shown){ out.innerHTML=''; return; }
+    var list=[], bad=0;
+    rows().forEach(function(r){
+      var w=parseFloat(r.w), l=parseFloat(r.l), t=parseFloat(r.t), q=parseInt(r.q,10);
+      if(!(w>0&&l>0&&t>0&&q>0)){ if(r.w||r.l||r.t) bad++; return; }
+      var manualSplit=parseInt(r.sp,10);
+      var splitN=(manualSplit>0)?manualSplit:Math.max(1,Math.ceil(w/S.maxW));
+      var stripW=w/splitN;
+      var pk=pickStock(t,S.aT,r.s);
+      var needW=stripW+S.aW, L=l+S.aL;
+      var floored=needW<S.minW;
+      var W=floored?S.minW:needW;
+      var saiEach=pk.stock.inch*(W/25.4)*(L/25.4)/144*SAI_FACTOR;
+      var sai=saiEach*q*pk.layers*splitN;
+      var saiLoss=sai*(1+S.loss/100);
+      list.push({n:r.n.trim()||'부재',w:w,l:l,t:t,q:q,pk:pk,W:W,L:L,sai:saiLoss,splitN:splitN,stripW:stripW,floored:floored});
+    });
+
+    if(!list.length){ out.innerHTML='<div class="card"><p class="hint">부재의 가로·세로·두께·개수를 입력하면 결과가 나와요.</p></div>'; return; }
+
+    var by={};
+    list.forEach(function(it){
+      var k=it.pk.stock.label;
+      if(!by[k]) by[k]={label:k,mm:it.pk.stock.mm,pieces:0,sai:0,lenMm:0,parts:[]};
+      var n=it.q*it.pk.layers*it.splitN;
+      by[k].pieces+=n; by[k].sai+=it.sai; by[k].lenMm+=it.L*n;
+      if(by[k].parts.indexOf(it.n)<0) by[k].parts.push(it.n);
+    });
+    var groups=STOCK.map(function(s){return by[s.label]}).filter(Boolean);
+    var tot={sai:0,pieces:0};
+    groups.forEach(function(g){tot.sai+=g.sai;tot.pieces+=g.pieces;});
+    function orderSai(x){return Math.ceil(x*2)/2;}
+
+    var h='<div class="card"><h2><span class="no">02</span>주문 합계</h2>';
+    h+='<div class="stats">'+
+      '<div class="stat main"><b>'+f1(groups.reduce(function(s,g){return s+orderSai(g.sai)},0))+' 사이</b><span>전체 주문 권장량</span></div>'+
+      '<div class="stat"><b>'+groups.length+'종</b><span>재재목 두께 종류</span></div>'+
+      '<div class="stat"><b>'+tot.pieces+'개</b><span>재단할 부재 수</span></div></div>';
+    h+='<div class="scroll"><table class="rtable"><thead><tr><th>재재목</th><th>쓰이는 부재</th><th class="r">필요 길이 합계<br><small>ft (mm)</small></th><th class="r">필요 사이</th><th class="r">주문 권장</th></tr></thead><tbody>';
+    groups.forEach(function(g){
+      h+='<tr><td class="c-title"><span class="tag">'+g.label+'</span> <small class="hint">'+f1(g.mm)+'T</small></td><td class="c-wide" data-label="쓰이는 부재">'+esc(g.parts.join(', '))+'</td>'+
+        '<td class="r c-wide" data-label="필요 길이 합계">'+ftMm(g.lenMm)+'</td><td class="r" data-label="필요 사이">'+f2(g.sai)+'</td><td class="r c-key" data-label="주문 권장"><b>'+f1(orderSai(g.sai))+' 사이</b></td></tr>';
+    });
+    h+='</tbody><tfoot><tr><td colspan="2" class="c-title">합계</td><td class="r c-wide" data-label="필요 길이 합계">'+ftMm(groups.reduce(function(s,g){return s+g.lenMm},0))+'</td><td class="r" data-label="필요 사이">'+f2(tot.sai)+'</td><td class="r c-key" data-label="주문 권장">'+f1(groups.reduce(function(s,g){return s+orderSai(g.sai)},0))+' 사이</td></tr></tfoot></table></div>';
+    h+='<p class="hint" style="margin:8px 0 0">주문 권장 사이는 두께별로 0.5사이 단위로 올린 값이에요. 필요 길이 합계는 해당 두께 부재를 전부 이어 붙였을 때 필요한 길이예요 — 엔우드처럼 길이를 피트로 고르는 곳에서 몇 피트짜리를 몇 장 살지 가늠할 때 참고하세요.</p>';
+
+    var txt='[재재목 주문]\n';
+    groups.forEach(function(g){ txt+='- '+g.label+' : '+f1(orderSai(g.sai))+'사이, 길이 합계 '+f2(g.lenMm/FT_MM)+'ft ('+f1(g.lenMm)+'mm) — '+g.parts.join(', ')+'\n'; });
+    txt+='합계 '+f1(groups.reduce(function(s,g){return s+orderSai(g.sai)},0))+'사이';
+    h+='<div class="row"><button id="copy">주문 내용 복사</button><span class="hint" id="copied"></span></div><pre>'+esc(txt)+'</pre></div>';
+
+    h+='<div class="card"><h2><span class="no">03</span>부재별 상세</h2><div class="scroll"><table class="rtable"><thead><tr><th>부재</th><th class="r">개수</th><th class="r">완성 치수<br><small>가로×세로×T</small></th><th>재재목</th><th class="r">재단 치수<br><small>쪽당, 여유 포함</small></th><th class="r">사이</th></tr></thead><tbody>';
+    list.forEach(function(it){
+      var note='';
+      if(it.pk.short) note+='<span class="warn">⚠ 두께 부족: '+f1(it.pk.need)+'T 필요</span>';
+      if(it.pk.laminated) note+='<span class="warn">8/4 '+it.pk.layers+'장 집성(두께)으로 계산</span>';
+      if(it.splitN>1) note+='<span class="warn">폭 집성 '+it.splitN+'쪽 (쪽당 '+f1(it.stripW)+'mm)</span>';
+      if(it.floored) note+='<span class="warn">최소 구매 폭 적용 (필요 폭보다 넓게 구매)</span>';
+      h+='<tr><td class="c-title">'+esc(it.n)+'</td><td class="r" data-label="개수">'+it.q+'</td><td class="r" data-label="완성 치수">'+f1(it.w)+'×'+f1(it.l)+'×'+f1(it.t)+'T</td>'+
+        '<td class="c-wide" data-label="재재목"><span class="tag">'+it.pk.stock.label+(it.pk.layers>1?' ×'+it.pk.layers:'')+'</span>'+note+'</td>'+
+        '<td class="r" data-label="재단 치수 (쪽당)">'+f1(it.W)+'×'+f1(it.L)+'</td><td class="r c-key" data-label="사이"><b>'+f2(it.sai)+'</b></td></tr>';
+    });
+    h+='</tbody><tfoot><tr><td colspan="4" class="c-title">합계</td><td class="c-empty"></td><td class="r c-key" data-label="사이">'+f2(tot.sai)+'</td></tr></tfoot></table></div>';
+    if(bad) h+='<p class="warn" style="margin-top:8px">입력이 덜 된 부재 '+bad+'개는 계산에서 빠졌어요.</p>';
+    h+='</div>';
+
+    out.innerHTML=h;
+    $('copy').onclick=function(){
+      try{navigator.clipboard.writeText(txt).then(function(){$('copied').textContent='복사됐어요!'},function(){$('copied').textContent='복사 실패. 아래 글을 직접 선택해 복사하세요.'})}
+      catch(e){$('copied').textContent='복사 실패. 아래 글을 직접 선택해 복사하세요.'}
+    };
+  }
+
+  ['aT','aL','aW','loss','maxW','minW'].forEach(function(id){$(id).addEventListener('input',update);$(id).addEventListener('change',update);});
+  tbody.addEventListener('input',update);
+  tbody.addEventListener('change',update);
+  $('addRow').onclick=function(){addRow();update();};
+  var backup=null;
+  function setSampleBtn(){ $('sample').textContent = backup ? '되돌리기' : '예시 불러오기'; }
+  $('sample').onclick=function(){
+    closeMenu();
+    if(backup){ tbody.innerHTML=''; (backup.length?backup:[null]).forEach(function(r){addRow(r||undefined)}); backup=null; }
+    else { backup=rows(); tbody.innerHTML=''; SAMPLE.forEach(addRow); }
+    setSampleBtn(); update();
+  };
+  function resetAll(){tbody.innerHTML='';addRow();backup=null;shown=false;setSampleBtn();closeMenu();update();}
+  window.resetCalc=resetAll;
+  $('clear').onclick=resetAll;
+  $('calc').onclick=function(){ closeMenu(); shown=true; update(); var r=$('result'); if(r.firstChild) r.firstChild.scrollIntoView({behavior:'smooth',block:'start'}); };
+
+  load();
+  update();
+})();
+</script>
+<script>
+(function(){
+  var intro=document.getElementById('intro'), app=document.getElementById('app');
+  function openApp(){ intro.hidden=true; app.hidden=false; window.scrollTo(0,0); if(location.hash!=='#calc') location.hash='calc'; }
+  function openIntro(){ app.hidden=true; intro.hidden=false; if(location.hash) history.replaceState(null,'',location.pathname+location.search); }
+  document.getElementById('enter').onclick=openApp;
+  document.getElementById('toIntro').onclick=function(){ if(window.resetCalc) window.resetCalc(); openIntro(); };
+  window.addEventListener('hashchange',function(){ if(location.hash==='#calc') openApp(); else openIntro(); });
+  if(location.hash==='#calc') openApp();
+})();
+</script>
+</body>
+</html>
