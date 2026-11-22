@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#F7F7F4">
 <meta name="color-scheme" content="light">
-<title>재재목 계산기</title>
+<title>제재목 계산기</title>
 <style>
   @font-face{font-family:"Pretendard";src:url("fonts/PretendardVariable.woff2") format("woff2-variations"),url("fonts/PretendardVariable.woff2") format("woff2");font-weight:45 920;font-style:normal;font-display:swap}
   :root{--bg:#161719;--card:#1f2023;--ink:#f2f0ed;--muted:#a19e99;--line:#313338;--accent:#e2793a;--accent-ink:#161719;--warn:#ff9a8a;--soft:#292a2e;--gold2:#f29a5c}
@@ -257,20 +257,20 @@
 </style>
 </head>
 <body>
-<section id="intro" aria-label="재재목 계산기 시작 화면">
+<section id="intro" aria-label="제재목 계산기 시작 화면">
   <div class="kicker">WOODWORK</div>
-  <h1 class="big">재재목 계산기</h1>
+  <h1 class="big">제재목 계산기</h1>
   <p class="lead">치수 넣고, 사이 받고, 주문하세요</p>
   <button class="cta" id="enter">시작하기</button>
 </section>
 <div class="wrap" id="app" hidden>
-  <header class="topbar"><div><div class="eyebrow">WOODWORK</div><h1>재재목 계산기</h1><p class="sub">부재 치수를 넣으면 재재목을 두께별로 몇 사이 사야 하는지 계산해드릴게요.</p></div><a class="helpbtn" href="help.html" aria-label="사용 방법 보기"><span class="help-ring" aria-hidden="true"><span class="help-q">?</span></span><span class="help-label" lang="en" aria-hidden="true">How to use</span></a></header>
+  <header class="topbar"><div><div class="eyebrow">WOODWORK</div><h1>제재목 계산기</h1><p class="sub">부재 치수를 넣으면 제재목을 두께별로 몇 사이 사야 하는지 계산해드릴게요.</p></div><a class="helpbtn" href="help.html" aria-label="사용 방법 보기"><span class="help-ring" aria-hidden="true"><span class="help-q">?</span></span><span class="help-label" lang="en" aria-hidden="true">How to use</span></a></header>
 
   <div class="card">
     <h2><span class="no">01</span>부재 목록</h2>
     <div class="scroll">
     <table id="parts">
-      <thead><tr><th>부재 이름</th><th>가로 (mm)<br><small>완성 폭</small></th><th>세로 (mm)<br><small>결 방향</small></th><th>두께 (T)</th><th>개수</th><th>재재목</th><th>폭 집성<br><small>쪽수</small></th><th></th></tr></thead>
+      <thead><tr><th>부재 이름</th><th>가로 (mm)<br><small>완성 폭</small></th><th>세로 (mm)<br><small>결 방향</small></th><th>두께 (T)</th><th>개수</th><th>제재목</th><th>폭 집성<br><small>쪽수</small></th><th></th></tr></thead>
       <tbody></tbody>
     </table>
     </div>
@@ -279,7 +279,7 @@
       <button id="sample">예시 불러오기</button>
       <button id="clear" class="btn-danger">전체 지우기</button>
     </div>
-    <p class="hint" style="margin:10px 0 0">재재목은 '자동'이면 두께에 맞춰 골라 줘요.</p>
+    <p class="hint" style="margin:10px 0 0">제재목은 '자동'이면 두께에 맞춰 골라 줘요.</p>
 
     <details>
       <summary>세부 설정</summary>
@@ -292,7 +292,7 @@
         <div><label for="minW">최소 구매 폭 (mm)<br><small>엔우드 기준 5인치=127mm</small></label><input type="number" inputmode="numeric" id="minW" name="minW" value="127" min="1" step="1"></div>
       </div>
       <p class="hint" style="margin:8px 0 0">
-        · 재재목 두께: 완성 T + 대패 여유보다 두꺼운 규격 (엔우드 실측 4/4=26T, 5/4=32T, 6/4=38T, 8/4=52T)<br>
+        · 제재목 두께: 완성 T + 대패 여유보다 두꺼운 규격 (엔우드 실측 4/4=26T, 5/4=32T, 6/4=38T, 8/4=52T)<br>
         · 폭 집성: 완성 폭이 기준보다 넓으면 자동으로 쪽을 나눠요<br>
         · 최소 구매 폭보다 좁은 부재는 최소 폭으로 계산해요<br>
         · 공식: 두께"×폭"×길이'÷12×0.707 (엔우드 기준)
@@ -342,11 +342,11 @@
       '<td data-label="세로 (mm)"><input class="num l" name="l" aria-label="세로 (mm), 결 방향" type="number" inputmode="decimal" min="1" autocomplete="off" value="'+esc(p.l)+'"></td>'+
       '<td data-label="두께 (T)"><input class="num t" name="t" aria-label="두께 (T)" type="number" inputmode="decimal" min="1" step="0.5" autocomplete="off" value="'+esc(p.t)+'"></td>'+
       '<td data-label="개수"><input class="num q" name="q" aria-label="개수" type="number" inputmode="numeric" min="1" autocomplete="off" value="'+esc(p.q)+'" style="min-width:52px"></td>'+
-      '<td data-label="재재목"><select class="s" hidden>'+opts+'</select><button type="button" class="sbtn" aria-haspopup="listbox" aria-expanded="false" aria-controls="menu"></button></td>'+
+      '<td data-label="제재목"><select class="s" hidden>'+opts+'</select><button type="button" class="sbtn" aria-haspopup="listbox" aria-expanded="false" aria-controls="menu"></button></td>'+
       '<td data-label="폭 집성"><input class="num sp" name="sp" aria-label="폭 집성 쪽수 (비우면 자동)" type="number" inputmode="numeric" min="1" autocomplete="off" placeholder="자동" value="'+esc(p.sp)+'" style="min-width:56px" title="완성 폭을 몇 쪽으로 나눠 붙일지. 비워 두면 폭 집성 기준으로 자동 계산"></td>'+
       '<td class="c-del"><button type="button" class="small del" title="삭제" aria-label="이 부재 삭제">✕</button></td>';
     var sel=tr.querySelector('.s'), sbtn=tr.querySelector('.sbtn'), nin=tr.querySelector('.n');
-    function setStock(v){ sel.value=v; sbtn.textContent=stockLabel(v); sbtn.setAttribute('aria-label','재재목: '+stockLabel(v)); }
+    function setStock(v){ sel.value=v; sbtn.textContent=stockLabel(v); sbtn.setAttribute('aria-label','제재목: '+stockLabel(v)); }
     setStock(p.s||'auto');
     sbtn.onclick=function(e){ e.stopPropagation(); if(menuFor===sbtn){ closeMenu(); return; }
       openMenu(sbtn, [{v:'auto',t:'자동'}].concat(STOCK.map(function(x){return {v:x.label,t:stockLabel(x.label)}})), sel.value,
@@ -369,7 +369,7 @@
     if(menuFor && menuFor!==anchor){ menuFor.setAttribute('aria-expanded','false'); menuFor.removeAttribute('aria-activedescendant'); }
     menuFor=anchor; menuPick=pick; menuIdx=-1;
     anchor.setAttribute('aria-expanded','true');
-    menu.setAttribute('aria-label', anchor.classList.contains('sbtn') ? '재재목 선택' : '부재 이름 선택');
+    menu.setAttribute('aria-label', anchor.classList.contains('sbtn') ? '제재목 선택' : '부재 이름 선택');
     menu.innerHTML=items.map(function(it,i){return '<div class="mi'+(it.v===cur?' cur':'')+'" id="mi-'+i+'" role="option" aria-selected="'+(it.v===cur)+'" data-v="'+esc(it.v)+'">'+esc(it.t)+'</div>'}).join('');
     var r=anchor.getBoundingClientRect();
     menu.style.minWidth=Math.max(r.width,140)+'px'; menu.hidden=false;
@@ -470,9 +470,9 @@
     var h='<div class="card"><h2><span class="no">02</span>주문 합계</h2>';
     h+='<div class="stats">'+
       '<div class="stat main"><b>'+f1(groups.reduce(function(s,g){return s+orderSai(g.sai)},0))+' 사이</b><span>전체 주문 권장량</span></div>'+
-      '<div class="stat"><b>'+groups.length+'종</b><span>재재목 두께 종류</span></div>'+
+      '<div class="stat"><b>'+groups.length+'종</b><span>제재목 두께 종류</span></div>'+
       '<div class="stat"><b>'+tot.pieces+'개</b><span>재단할 부재 수</span></div></div>';
-    h+='<div class="scroll"><table class="rtable"><thead><tr><th>재재목</th><th>쓰이는 부재</th><th class="r">필요 길이 합계<br><small>ft (mm)</small></th><th class="r">필요 사이</th><th class="r">주문 권장</th></tr></thead><tbody>';
+    h+='<div class="scroll"><table class="rtable"><thead><tr><th>제재목</th><th>쓰이는 부재</th><th class="r">필요 길이 합계<br><small>ft (mm)</small></th><th class="r">필요 사이</th><th class="r">주문 권장</th></tr></thead><tbody>';
     groups.forEach(function(g){
       h+='<tr><td class="c-title"><span class="tag">'+g.label+'</span> <small class="hint">'+f1(g.mm)+'T</small></td><td class="c-wide" data-label="쓰이는 부재">'+esc(g.parts.join(', '))+'</td>'+
         '<td class="r c-wide" data-label="필요 길이 합계">'+ftMm(g.lenMm)+'</td><td class="r" data-label="필요 사이">'+f2(g.sai)+'</td><td class="r c-key" data-label="주문 권장"><b>'+f1(orderSai(g.sai))+' 사이</b></td></tr>';
@@ -480,12 +480,12 @@
     h+='</tbody><tfoot><tr><td colspan="2" class="c-title">합계</td><td class="r c-wide" data-label="필요 길이 합계">'+ftMm(groups.reduce(function(s,g){return s+g.lenMm},0))+'</td><td class="r" data-label="필요 사이">'+f2(tot.sai)+'</td><td class="r c-key" data-label="주문 권장">'+f1(groups.reduce(function(s,g){return s+orderSai(g.sai)},0))+' 사이</td></tr></tfoot></table></div>';
     h+='<p class="hint" style="margin:8px 0 0">주문 권장 사이는 두께별로 0.5사이 단위로 올린 값이에요. 필요 길이 합계는 해당 두께 부재를 전부 이어 붙였을 때 필요한 길이예요 — 엔우드처럼 길이를 피트로 고르는 곳에서 몇 피트짜리를 몇 장 살지 가늠할 때 참고하세요.</p>';
 
-    var txt='[재재목 주문]\n';
+    var txt='[제재목 주문]\n';
     groups.forEach(function(g){ txt+='- '+g.label+' : '+f1(orderSai(g.sai))+'사이, 길이 합계 '+f2(g.lenMm/FT_MM)+'ft ('+f1(g.lenMm)+'mm) — '+g.parts.join(', ')+'\n'; });
     txt+='합계 '+f1(groups.reduce(function(s,g){return s+orderSai(g.sai)},0))+'사이';
     h+='<div class="row"><button id="copy">주문 내용 복사</button><span class="hint" id="copied" role="status" aria-live="polite"></span></div><pre>'+esc(txt)+'</pre></div>';
 
-    h+='<div class="card"><h2><span class="no">03</span>부재별 상세</h2><div class="scroll"><table class="rtable"><thead><tr><th>부재</th><th class="r">개수</th><th class="r">완성 치수<br><small>가로×세로×T</small></th><th>재재목</th><th class="r">재단 치수<br><small>쪽당, 여유 포함</small></th><th class="r">사이</th></tr></thead><tbody>';
+    h+='<div class="card"><h2><span class="no">03</span>부재별 상세</h2><div class="scroll"><table class="rtable"><thead><tr><th>부재</th><th class="r">개수</th><th class="r">완성 치수<br><small>가로×세로×T</small></th><th>제재목</th><th class="r">재단 치수<br><small>쪽당, 여유 포함</small></th><th class="r">사이</th></tr></thead><tbody>';
     list.forEach(function(it){
       var note='';
       if(it.pk.short) note+='<span class="warn">⚠ 두께 부족: '+f1(it.pk.need)+'T 필요</span>';
@@ -493,7 +493,7 @@
       if(it.splitN>1) note+='<span class="warn">폭 집성 '+it.splitN+'쪽 (쪽당 '+f1(it.stripW)+'mm)</span>';
       if(it.floored) note+='<span class="warn">최소 구매 폭 적용 (필요 폭보다 넓게 구매)</span>';
       h+='<tr><td class="c-title">'+esc(it.n)+'</td><td class="r" data-label="개수">'+it.q+'</td><td class="r" data-label="완성 치수">'+f1(it.w)+'×'+f1(it.l)+'×'+f1(it.t)+'T</td>'+
-        '<td class="c-wide" data-label="재재목"><span class="tag">'+it.pk.stock.label+(it.pk.layers>1?' ×'+it.pk.layers:'')+'</span>'+note+'</td>'+
+        '<td class="c-wide" data-label="제재목"><span class="tag">'+it.pk.stock.label+(it.pk.layers>1?' ×'+it.pk.layers:'')+'</span>'+note+'</td>'+
         '<td class="r" data-label="재단 치수 (쪽당)">'+f1(it.W)+'×'+f1(it.L)+'</td><td class="r c-key" data-label="사이"><b>'+f2(it.sai)+'</b></td></tr>';
     });
     h+='</tbody><tfoot><tr><td colspan="4" class="c-title">합계</td><td class="c-empty"></td><td class="r c-key" data-label="사이">'+f2(tot.sai)+'</td></tr></tfoot></table></div>';
@@ -501,7 +501,7 @@
     h+='</div>';
 
     out.innerHTML=h;
-    announce('주문 권장량 '+f1(groups.reduce(function(s,g){return s+orderSai(g.sai)},0))+' 사이, 재재목 '+groups.length+'종');
+    announce('주문 권장량 '+f1(groups.reduce(function(s,g){return s+orderSai(g.sai)},0))+' 사이, 제재목 '+groups.length+'종');
     $('copy').onclick=function(){
       try{navigator.clipboard.writeText(txt).then(function(){$('copied').textContent='복사됐어요!'},function(){$('copied').textContent='복사 실패. 아래 글을 직접 선택해 복사하세요.'})}
       catch(e){$('copied').textContent='복사 실패. 아래 글을 직접 선택해 복사하세요.'}
