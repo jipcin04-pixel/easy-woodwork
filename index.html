@@ -293,6 +293,8 @@
   var $=function(id){return document.getElementById(id)};
   var tbody=document.querySelector('#parts tbody');
   var STORE='lumber-saisu-v8';
+  // 입력값은 이 탭에서만 기억(sessionStorage): 새로고침해도 남고, 탭을 닫고 다시 들어오면 처음부터 시작
+  try{ localStorage.removeItem(STORE); }catch(e){} // 예전 버전이 브라우저에 영구 저장해 둔 값 정리
   // mm: 엔우드 고시 실측 두께(공칭 치수보다 두꺼움, 대패 전 기준). 10/4·12/4는 공식 수치가 없어 8/4의 증가율로 추정.
   var STOCK=[{q:4,label:'4/4',mm:26},{q:5,label:'5/4',mm:32},{q:6,label:'6/4',mm:38},{q:8,label:'8/4',mm:52},{q:10,label:'10/4',mm:65,est:true},{q:12,label:'12/4',mm:78,est:true}];
   STOCK.forEach(function(s){ s.inch=s.q/4; });
@@ -379,10 +381,10 @@
   function num(id,d){var v=parseFloat($(id).value);return isFinite(v)&&v>=0?v:d}
   function settings(){ return {aT:num('aT',0),aL:num('aL',0),aW:num('aW',0),loss:num('loss',0),maxW:num('maxW',200)||200,minW:num('minW',MIN_WIDTH_MM)||MIN_WIDTH_MM}; }
 
-  function save(){try{localStorage.setItem(STORE,JSON.stringify({set:{aT:$('aT').value,aL:$('aL').value,aW:$('aW').value,loss:$('loss').value,maxW:$('maxW').value,minW:$('minW').value},rows:rows()}))}catch(e){}}
+  function save(){try{sessionStorage.setItem(STORE,JSON.stringify({set:{aT:$('aT').value,aL:$('aL').value,aW:$('aW').value,loss:$('loss').value,maxW:$('maxW').value,minW:$('minW').value},rows:rows()}))}catch(e){}}
   function load(){
     try{
-      var d=JSON.parse(localStorage.getItem(STORE)||'null');
+      var d=JSON.parse(sessionStorage.getItem(STORE)||'null');
       if(d&&d.rows&&d.rows.length){
         ['aT','aL','aW','loss','maxW','minW'].forEach(function(k){ if(d.set&&d.set[k]!=null) $(k).value=d.set[k]; });
         d.rows.forEach(addRow); return;
