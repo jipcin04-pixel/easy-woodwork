@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#F7F7F4">
+<meta name="color-scheme" content="light">
+<title>사용 방법 — 재재목 계산기</title>
+<style>
+  @font-face{font-family:"Pretendard";src:url("fonts/PretendardVariable.woff2") format("woff2-variations"),url("fonts/PretendardVariable.woff2") format("woff2");font-weight:45 920;font-style:normal;font-display:swap}
+  :root{--bg:#F7F7F4;--surface:#FFFFFF;--ink:#16181D;--muted:#5B606B;--line:#D5D7DD;--line2:#E8E9ED;
+    --indigo:#23408E;--indigo-2:#2F52AE;--tint:#E6ECF8;--seal:#C8412B;--warn:#B8321F}
+  *{box-sizing:border-box}
+  html{color-scheme:light}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:"Pretendard",system-ui,-apple-system,"Apple SD Gothic Neo",sans-serif;
+    font-size:16px;line-height:1.7;letter-spacing:-.005em;-webkit-font-smoothing:antialiased}
+  a{color:var(--indigo)}
+  a:focus-visible,button:focus-visible{outline:2px solid var(--indigo);outline-offset:3px;border-radius:2px}
+  .skip{position:absolute;left:-9999px;top:8px;background:var(--ink);color:#fff;padding:8px 12px;z-index:10}
+  .skip:focus{left:8px}
+  .wrap{max-width:860px;margin:0 auto;padding:56px 32px 40px}
+
+  /* 머리글: 계산기와 같은 구성 */
+  .topbar{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;padding-bottom:32px;border-bottom:2px solid var(--indigo)}
+  .eyebrow{font-size:11px;letter-spacing:.35em;color:var(--seal);font-weight:600;margin-bottom:14px}
+  h1{font-size:clamp(30px,4vw,42px);font-weight:700;letter-spacing:-.02em;margin:0 0 10px;line-height:1.2}
+  .sub{margin:0;color:var(--muted);font-size:15px;max-width:34em}
+  .back{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 4px;color:var(--muted);font-size:14px;text-decoration:none;white-space:nowrap}
+  .back:hover{color:var(--ink)}
+
+  section{padding:48px 0 8px}
+  section+section::before{content:"";display:block;height:6px;margin:0 0 44px;
+    background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='6' preserveAspectRatio='none'%3E%3Cpath d='M0 3.2 C 120 2.6, 240 3.6, 360 3 S 540 2.7, 600 3.3' stroke='%2323408E' stroke-width='1.6' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") center/100% 6px no-repeat}
+  h2{font-size:22px;font-weight:700;letter-spacing:-.01em;margin:0 0 8px;scroll-margin-top:24px}
+  h1,h2,h3{text-wrap:balance}
+  .lede{color:var(--muted);margin:0 0 28px}
+  h3{font-size:17px;font-weight:700;margin:0 0 6px}
+  p{margin:0 0 12px}
+  .num{font-variant-numeric:tabular-nums}
+  strong{font-weight:700}
+
+  /* 시그니처: 판재 먹줄 도면 */
+  .board{margin:8px 0 0;display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:28px;align-items:center}
+  .board svg{width:100%;height:auto;display:block}
+  .board svg text{font-family:inherit;font-weight:700;fill:var(--indigo)}
+  .legend{list-style:none;margin:0;padding:0;display:grid;gap:16px}
+  .legend li{display:grid;grid-template-columns:52px 1fr;gap:12px;align-items:baseline}
+  .legend b{display:inline-block;text-align:center;padding:2px 0;border-radius:3px;background:var(--tint);color:var(--indigo);font-size:14px;font-weight:700}
+  .legend span{color:var(--muted);font-size:15px}
+  .legend span strong{color:var(--ink)}
+
+  /* 순서: 실제로 순서가 있는 단계라 도장 번호 사용 */
+  .steps{list-style:none;margin:0;padding:0;counter-reset:step;display:grid;gap:28px}
+  .steps>li{counter-increment:step;display:grid;grid-template-columns:44px 1fr;gap:18px}
+  .steps>li::before{content:counter(step);display:grid;place-items:center;width:34px;height:34px;margin-top:2px;border:1.5px solid var(--seal);border-radius:3px;color:var(--seal);font-size:14px;font-weight:700;transform:rotate(-3deg)}
+  .steps p{color:var(--muted);margin:0 0 8px}
+  .steps p strong{color:var(--ink)}
+  .chips{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 0;padding:0;list-style:none}
+  .chips li{font-size:13px;padding:3px 10px;border:1px solid var(--line);border-radius:999px;background:var(--surface);color:var(--ink);white-space:nowrap}
+  .chips li em{font-style:normal;color:var(--muted)}
+
+  /* 정의 목록 */
+  dl.defs{margin:0;display:grid;grid-template-columns:minmax(120px,180px) 1fr;border-top:1px solid var(--line)}
+  dl.defs dt,dl.defs dd{margin:0;padding:14px 0;border-bottom:1px solid var(--line2)}
+  dl.defs dt{font-weight:700;padding-right:16px}
+  dl.defs dd{color:var(--muted)}
+  dl.defs dd strong{color:var(--ink)}
+  .warn-sample{display:inline-block;color:var(--warn);font-weight:600;font-size:14px}
+  .tag{display:inline-block;padding:1px 8px;border-radius:2px;background:var(--tint);color:var(--indigo);font-weight:700;font-size:14px}
+
+  /* 표 */
+  table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums;margin:4px 0 8px}
+  th{font-size:13px;font-weight:500;color:var(--muted);text-align:left;padding:10px 8px;border-bottom:1px solid var(--line)}
+  td{padding:12px 8px;border-bottom:1px solid var(--line2)}
+  td.r,th.r{text-align:right}
+  .est{color:var(--muted);font-size:13px}
+
+  /* 계산 예시: 공식을 한 줄씩 풀어서 */
+  .formula{margin:6px 0 20px;padding:16px 18px;background:var(--surface);border:1px solid var(--line);border-left:3px solid var(--indigo);font-size:15px}
+  .worked{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
+  .worked li{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:16px;padding:12px 0;border-bottom:1px solid var(--line2);align-items:baseline}
+  .worked li span{color:var(--muted)}
+  .worked li b{font-variant-numeric:tabular-nums;white-space:nowrap}
+  .worked li.total b{color:var(--indigo);font-size:18px}
+
+  .notes{margin:0;padding:0 0 0 1.1em;color:var(--muted)}
+  .notes li{margin:0 0 8px}
+  .notes strong{color:var(--ink)}
+
+  .cta-row{display:flex;justify-content:center;padding:44px 0 8px}
+  .cta{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 32px;background:var(--indigo);color:#fff;text-decoration:none;font-weight:700;letter-spacing:.02em;border-radius:2px;transition:background .2s}
+  .cta:hover{background:var(--indigo-2)}
+  .credit{margin:0;padding:48px 0 8px;text-align:center;font-size:12px;letter-spacing:.12em;color:var(--muted)}
+  .credit b{color:var(--ink);font-weight:500}
+
+  a,button{touch-action:manipulation}
+
+  @media (max-width:720px){
+    .wrap{padding:28px 16px 24px}
+    .topbar{padding-bottom:22px}
+    h1{font-size:28px}
+    section{padding:36px 0 4px}
+    section+section::before{margin-bottom:32px}
+    .board{grid-template-columns:1fr;gap:20px}
+    dl.defs{grid-template-columns:1fr}
+    dl.defs dt{padding-bottom:2px;border-bottom:none}
+    dl.defs dd{padding-top:0}
+    .steps>li{grid-template-columns:40px 1fr;gap:12px}
+    .cta{width:100%}
+    th,td{padding-left:4px;padding-right:4px}
+  }
+</style>
+</head>
+<body>
+<a class="skip" href="#main">본문으로 건너뛰기</a>
+<div class="wrap">
+  <header class="topbar">
+    <div>
+      <div class="eyebrow">WOODWORK</div>
+      <h1>사용 방법</h1>
+      <p class="sub">부재 치수를 넣으면, 재재목을 두께별로 몇 사이 주문해야 하는지 알려줘요. 처음이라면 아래 순서대로 한 번 따라 해 보세요.</p>
+    </div>
+    <a class="back" href="index.html#calc">← 계산기로</a>
+  </header>
+
+  <main id="main">
+    <section aria-labelledby="h-dims">
+      <h2 id="h-dims">치수는 이렇게 재요</h2>
+      <p class="lede">가장 많이 헷갈리는 부분이에요. <strong>세로는 나뭇결 방향</strong>이라는 것만 기억하세요.</p>
+      <div class="board">
+        <svg viewBox="0 0 700 260" role="img" aria-labelledby="board-title board-desc">
+          <title id="board-title">판재 치수 도면</title>
+          <desc id="board-desc">긴 판재 그림. 나뭇결을 따라가는 긴 쪽이 세로, 결을 가로지르는 쪽이 가로(완성 폭), 판의 높이가 두께 T예요.</desc>
+          <defs>
+            <marker id="ar" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0 1 L10 5 L0 9" fill="none" stroke="#23408E" stroke-width="1.6"/>
+            </marker>
+          </defs>
+          <!-- 판재 -->
+          <polygon points="120,150 520,150 620,90 220,90" fill="#FFFFFF" stroke="#16181D" stroke-width="1.6" stroke-linejoin="round"/>
+          <polygon points="120,150 520,150 520,180 120,180" fill="#EEF0F4" stroke="#16181D" stroke-width="1.6" stroke-linejoin="round"/>
+          <polygon points="520,150 620,90 620,120 520,180" fill="#E2E6EE" stroke="#16181D" stroke-width="1.6" stroke-linejoin="round"/>
+          <!-- 나뭇결 -->
+          <g fill="none" stroke="#23408E" stroke-opacity=".28" stroke-width="1.2" stroke-linecap="round">
+            <path d="M148 138 C 230 134, 320 141, 400 136 S 500 133, 548 138"/>
+            <path d="M168 126 C 260 121, 340 129, 430 123 S 520 121, 568 126"/>
+            <path d="M188 114 C 270 110, 360 117, 450 111 S 540 109, 588 114"/>
+            <path d="M208 102 C 300 98, 380 104, 470 99 S 560 97, 604 102"/>
+            <path d="M300 136 C 330 128, 360 128, 392 134" stroke-opacity=".2"/>
+          </g>
+          <!-- 결 방향 표시 -->
+          <path d="M300 120 L420 120" stroke="#23408E" stroke-width="1.4" marker-end="url(#ar)" opacity=".7"/>
+          <text x="360" y="112" font-size="14" text-anchor="middle" opacity=".8">결</text>
+          <!-- 세로 치수선 -->
+          <path d="M120 186 L120 214 M520 186 L520 214" stroke="#23408E" stroke-width="1" opacity=".5"/>
+          <path d="M126 206 L514 206" stroke="#23408E" stroke-width="1.6" marker-start="url(#ar)" marker-end="url(#ar)"/>
+          <text x="320" y="238" font-size="20" text-anchor="middle">세로</text>
+          <!-- 가로 치수선 -->
+          <path d="M526 186 L548 200 M626 126 L648 140" stroke="#23408E" stroke-width="1" opacity=".5"/>
+          <path d="M546 192 L640 136" stroke="#23408E" stroke-width="1.6" marker-start="url(#ar)" marker-end="url(#ar)"/>
+          <text x="612" y="190" font-size="20">가로</text>
+          <!-- 두께 치수선 -->
+          <path d="M114 150 L86 150 M114 180 L86 180" stroke="#23408E" stroke-width="1" opacity=".5"/>
+          <path d="M96 155 L96 175" stroke="#23408E" stroke-width="1.6" marker-start="url(#ar)" marker-end="url(#ar)"/>
+          <text x="78" y="172" font-size="20" text-anchor="end">두께</text>
+        </svg>
+        <ul class="legend">
+          <li><b>세로</b><span><strong>나뭇결 방향의 길이</strong>(mm). 보통 가장 긴 쪽이에요.</span></li>
+          <li><b>가로</b><span><strong>완성했을 때의 폭</strong>(mm). 결을 가로지르는 방향이에요.</span></li>
+          <li><b>두께</b><span><strong>대패질을 마친 최종 두께</strong>(T, mm). 대패 여유는 계산기가 알아서 더해요.</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <section aria-labelledby="h-steps">
+      <h2 id="h-steps">계산 순서</h2>
+      <p class="lede">1번과 4번만 해도 결과가 나와요. 2·3번은 필요할 때만 쓰세요.</p>
+      <ol class="steps">
+        <li>
+          <div>
+            <h3>부재를 입력해요</h3>
+            <p>만들 가구의 부재를 한 줄에 하나씩 넣어요. <strong>개수</strong>는 같은 치수의 부재가 몇 개인지예요. 줄이 더 필요하면 <strong>+ 부재 추가</strong>를 누르세요.</p>
+            <ul class="chips" aria-label="입력 예시">
+              <li>상판</li><li><em>가로</em> 600</li><li><em>세로</em> 1000</li><li><em>두께</em> 20</li><li><em>개수</em> 1</li>
+            </ul>
+            <p style="margin-top:12px">처음이라면 <strong>예시 불러오기</strong>로 채워진 모습을 먼저 보셔도 좋아요.</p>
+          </div>
+        </li>
+        <li>
+          <div>
+            <h3>재재목과 폭 집성은 그대로 둬도 돼요</h3>
+            <p><strong>재재목</strong>을 ‘자동’으로 두면 완성 두께에 대패 여유를 더한 값보다 두꺼운 규격 중 가장 얇은 것을 골라요. 특정 두께로 사고 싶을 때만 직접 고르세요.</p>
+            <p><strong>폭 집성</strong>을 비워 두면, 완성 폭이 기준(기본 200mm)보다 넓을 때 알아서 여러 쪽으로 나눠 계산해요.</p>
+          </div>
+        </li>
+        <li>
+          <div>
+            <h3>여유값은 세부 설정에서 바꿔요</h3>
+            <p>기본값은 일반적인 작업 기준이에요. 작업 방식이 다르면 <strong>세부 설정</strong>을 열어 바꾸세요.</p>
+            <ul class="chips" aria-label="세부 설정 기본값">
+              <li><em>대패 여유</em> 5T</li><li><em>길이 여유</em> 50mm</li><li><em>폭 여유</em> 10mm</li><li><em>로스율</em> 25%</li><li><em>폭 집성 기준</em> 200mm</li><li><em>최소 구매 폭</em> 127mm</li>
+            </ul>
+          </div>
+        </li>
+        <li>
+          <div>
+            <h3>계산하기를 눌러 결과를 확인해요</h3>
+            <p>결과가 나온 뒤에 치수를 고치면 결과도 바로 바뀌어요. 주문할 때는 <strong>주문 내용 복사</strong>로 글을 복사해서 문자나 메신저에 붙여 넣으면 돼요.</p>
+          </div>
+        </li>
+      </ol>
+    </section>
+
+    <section aria-labelledby="h-result">
+      <h2 id="h-result">결과 읽는 법</h2>
+      <p class="lede">위에서 아래로 갈수록 자세해져요.</p>
+      <dl class="defs">
+        <dt>주문 합계</dt>
+        <dd><strong>전체 주문 권장량</strong>이 가장 중요한 숫자예요. 두께별로 0.5사이 단위로 올린 값을 모두 더한 거예요.</dd>
+        <dt>두께별 표</dt>
+        <dd><span class="tag">4/4</span> 같은 규격마다 <strong>필요 사이</strong>(정확한 값)와 <strong>주문 권장</strong>(올린 값)을 보여줘요. <strong>필요 길이 합계</strong>는 그 두께 부재를 전부 이어 붙인 길이라서, 피트 단위로 파는 곳에서 몇 장 살지 가늠할 때 써요.</dd>
+        <dt>부재별 상세</dt>
+        <dd>부재마다 어떤 규격으로 계산했는지, 여유를 더한 <strong>재단 치수</strong>는 얼마인지 보여줘요.</dd>
+      </dl>
+    </section>
+
+    <section aria-labelledby="h-warn">
+      <h2 id="h-warn">빨간 안내 문구의 뜻</h2>
+      <p class="lede">오류가 아니라, 계산을 어떻게 했는지 알려주는 메모예요.</p>
+      <dl class="defs">
+        <dt><span class="warn-sample">폭 집성 3쪽</span></dt>
+        <dd>폭이 넓어서 세 쪽으로 나눠 붙인다고 보고 계산했어요. 쪽마다 폭 여유가 따로 붙어요.</dd>
+        <dt><span class="warn-sample">최소 구매 폭 적용</span></dt>
+        <dd>부재가 좁아도 판매처에서 최소 폭(기본 5인치, 127mm) 이하로는 팔지 않아서, 그 폭으로 계산했어요.</dd>
+        <dt><span class="warn-sample">8/4 2장 집성</span></dt>
+        <dd>가장 두꺼운 규격보다 더 두꺼운 부재라서, 8/4를 여러 장 겹쳐 붙인다고 보고 계산했어요.</dd>
+        <dt><span class="warn-sample">⚠ 두께 부족</span></dt>
+        <dd>직접 고른 재재목이 대패 여유까지 더한 두께보다 얇아요. 더 두꺼운 규격을 고르거나 ‘자동’으로 바꾸세요.</dd>
+      </dl>
+    </section>
+
+    <section aria-labelledby="h-unit">
+      <h2 id="h-unit">사이와 계산 공식</h2>
+      <p class="lede"><strong>사이</strong>는 목재 부피를 세는 단위예요. 계산기는 엔우드에서 쓰는 공식을 따라요.</p>
+      <div class="formula num">사이 = 두께(인치) × 폭(인치) × 길이(피트) ÷ 12 × 0.707</div>
+
+      <h3>재재목 두께 규격</h3>
+      <p style="color:var(--muted)">대패질하기 전의 실제 두께예요. 완성 두께에 대패 여유를 더한 값보다 두꺼운 규격이 골라져요.</p>
+      <table>
+        <thead><tr><th>규격</th><th>두께(인치)</th><th class="r">실제 두께</th></tr></thead>
+        <tbody>
+          <tr><td><span class="tag">4/4</span></td><td>1</td><td class="r">26T</td></tr>
+          <tr><td><span class="tag">5/4</span></td><td>1¼</td><td class="r">32T</td></tr>
+          <tr><td><span class="tag">6/4</span></td><td>1½</td><td class="r">38T</td></tr>
+          <tr><td><span class="tag">8/4</span></td><td>2</td><td class="r">52T</td></tr>
+          <tr><td><span class="tag">10/4</span></td><td>2½</td><td class="r">65T <span class="est">추정</span></td></tr>
+          <tr><td><span class="tag">12/4</span></td><td>3</td><td class="r">78T <span class="est">추정</span></td></tr>
+        </tbody>
+      </table>
+      <p class="est">10/4·12/4는 공개된 수치가 없어서 8/4의 비율로 추정한 값이에요.</p>
+
+      <h3 style="margin-top:32px">예시: 상판 600 × 1000 × 20T 한 장</h3>
+      <ol class="worked">
+        <li><span>두께 20T + 대패 여유 5T = 25T → 26T인 규격</span><b>4/4 (1인치)</b></li>
+        <li><span>폭 600mm가 기준 200mm보다 넓어서 나눔</span><b>3쪽 × 200mm</b></li>
+        <li><span>쪽당 재단 치수 (폭 +10, 길이 +50)</span><b>210 × 1,050mm</b></li>
+        <li><span>쪽당 사이: 1 × 8.27인치 × 3.44피트 ÷ 12 × 0.707</span><b>1.68사이</b></li>
+        <li><span>3쪽 합계</span><b>5.03사이</b></li>
+        <li class="total"><span>로스율 25% 더하기</span><b>6.29사이</b></li>
+      </ol>
+    </section>
+
+    <section aria-labelledby="h-notes">
+      <h2 id="h-notes">알아두세요</h2>
+      <ul class="notes">
+        <li><strong>입력한 내용은 이 탭에서만 기억해요.</strong> 새로고침해도 남아 있지만, 탭을 닫고 다시 들어오면 처음부터 시작해요.</li>
+        <li>결과는 주문량을 가늠하기 위한 값이에요. <strong>실제 주문 전에 판매처의 규격과 단가를 꼭 확인하세요.</strong></li>
+        <li>로스율은 옹이, 갈라짐, 재단 손실을 감안한 여유예요. 목재 상태가 좋지 않으면 높여 주세요.</li>
+      </ul>
+    </section>
+
+    <div class="cta-row"><a class="cta" href="index.html#calc">계산기로 돌아가기</a></div>
+  </main>
+
+  <footer class="credit"><b>개발자</b> 조준혁 | cho-01000@naver.com</footer>
+</div>
+</body>
+</html>

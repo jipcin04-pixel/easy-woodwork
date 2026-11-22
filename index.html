@@ -48,7 +48,6 @@
   input:focus,select:focus{outline:2px solid var(--accent);outline-offset:-1px}
   .tag{color:var(--gold2)}
   .topbar{display:flex;justify-content:space-between;align-items:center;gap:10px}
-  .linkbtn{background:none;border:none;color:var(--muted);font-size:13px;padding:4px 0;text-decoration:underline}
   [hidden]{display:none!important}
 
 
@@ -60,8 +59,6 @@
   h1{font-family:"Pretendard",system-ui,-apple-system,"Apple SD Gothic Neo",sans-serif;font-weight:600;font-size:clamp(30px,4vw,42px);letter-spacing:-.02em;margin:0 0 10px}
   .big{font-family:"Pretendard",system-ui,-apple-system,"Apple SD Gothic Neo",sans-serif;font-weight:600;letter-spacing:-.02em}
   .sub{font-size:14px;font-weight:300;margin:0;color:var(--muted)}
-  .linkbtn{text-decoration:none;font-size:13px;color:var(--muted);letter-spacing:.02em;white-space:nowrap;flex-shrink:0}
-  .linkbtn:hover{color:var(--accent)}
   .card{background:none;border:none;border-radius:0;padding:44px 0 12px;margin:0;border-bottom:1px solid var(--line)}
   h2{display:flex;align-items:baseline;gap:14px;font-family:"Pretendard",system-ui,-apple-system,"Apple SD Gothic Neo",sans-serif;font-weight:600;font-size:20px;letter-spacing:-.01em;margin:0 0 24px}
   h2 .no{font-family:"Pretendard",system-ui,-apple-system,"Apple SD Gothic Neo",sans-serif;font-size:12px;font-weight:500;color:var(--accent);letter-spacing:.1em}
@@ -197,12 +194,11 @@
   .credit{color:var(--muted)} .credit b{color:var(--ink)}
   button{color:var(--ink);border-color:var(--line)}
   button:hover{border-color:var(--ink);color:var(--ink)}
-  button:focus-visible,.linkbtn:focus-visible{outline:2px solid var(--ring);outline-offset:2px}
+  button:focus-visible{outline:2px solid var(--ring);outline-offset:2px}
   button.small.del{color:var(--muted)} button.small.del:hover{color:var(--warn)}
   button.btn-accent{background:var(--fill);border-color:var(--fill);color:var(--fill-ink)}
   button.btn-accent:hover{background:var(--fill-hover);border-color:var(--fill-hover);color:var(--fill-ink)}
   button.btn-danger{color:var(--muted)} button.btn-danger:hover{border-color:var(--warn);color:var(--warn)}
-  .linkbtn{color:var(--muted)} .linkbtn:hover{color:var(--ink)}
   .eyebrow,.kicker,h2 .no{color:var(--kicker)}
   .sbtn{color:var(--ink);border-bottom-color:var(--line)} .sbtn:hover{color:var(--ink);border-bottom-color:var(--muted)}
   .caret::after,.sbtn::after{border-color:var(--muted)}
@@ -236,6 +232,28 @@
   #intro .big{color:var(--ink)}
   #intro .lead::after{content:"";display:block;width:min(360px,70vw);height:6px;margin:18px auto 0;
     background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='6' preserveAspectRatio='none'%3E%3Cpath d='M0 3.2 C 60 2.6, 120 3.6, 180 3 S 270 2.7, 300 3.3' stroke='%2323408E' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") center/100% 6px no-repeat}
+  /* 사용 방법(?) 버튼: 쪽빛→하늘→도장색 그라데이션 테두리가 천천히 돌고, 은은하게 빛남 */
+  @property --help-a{syntax:"<angle>";inherits:false;initial-value:0deg}
+  .helpbtn{display:inline-flex;flex-direction:column;align-items:center;gap:6px;flex-shrink:0;min-width:64px;padding:2px 0;text-decoration:none;color:inherit}
+  .help-ring{position:relative;display:grid;place-items:center;width:44px;height:44px;border-radius:50%;background:var(--bg);transition:background .25s}
+  .help-ring::before{content:"";position:absolute;inset:0;border-radius:50%;padding:2px;
+    background:conic-gradient(from var(--help-a),#23408E,#5B83E0,#C8412B,#23408E);
+    -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;
+    animation:help-spin 7s linear infinite}
+  .help-ring::after{content:"";position:absolute;inset:0;border-radius:50%;pointer-events:none;animation:help-glow 3.6s ease-out infinite}
+  .help-q{position:relative;font-size:21px;font-weight:800;line-height:1;
+    background:linear-gradient(120deg,#23408E 25%,#5B83E0 45%,#C8412B 58%,#23408E 78%);background-size:260% 100%;
+    -webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;animation:help-sheen 7s ease-in-out infinite}
+  .help-label{font-size:10.5px;font-weight:600;letter-spacing:.06em;color:var(--muted);white-space:nowrap;transition:color .25s}
+  .helpbtn:hover .help-ring{background:#23408E}
+  .helpbtn:hover .help-q{background:none;color:#fff;-webkit-text-fill-color:#fff}
+  .helpbtn:hover .help-label{color:#23408E}
+  .helpbtn:focus-visible{outline:none}
+  .helpbtn:focus-visible .help-ring{outline:2px solid var(--ring);outline-offset:3px}
+  @keyframes help-spin{to{--help-a:360deg}}
+  @keyframes help-sheen{0%,100%{background-position:100% 0}50%{background-position:0 0}}
+  @keyframes help-glow{0%{box-shadow:0 0 0 0 rgba(47,82,174,.32)}70%,100%{box-shadow:0 0 0 9px rgba(47,82,174,0)}}
+  @media (prefers-reduced-motion: reduce){.help-ring::before,.help-ring::after,.help-q{animation:none}}
 </style>
 </head>
 <body>
@@ -246,7 +264,7 @@
   <button class="cta" id="enter">시작하기</button>
 </section>
 <div class="wrap" id="app" hidden>
-  <header class="topbar"><div><div class="eyebrow">WOODWORK</div><h1>재재목 계산기</h1><p class="sub">부재 치수를 넣으면 재재목을 두께별로 몇 사이 사야 하는지 계산해드릴게요.</p></div><button class="linkbtn" id="toIntro">← 처음 화면</button></header>
+  <header class="topbar"><div><div class="eyebrow">WOODWORK</div><h1>재재목 계산기</h1><p class="sub">부재 치수를 넣으면 재재목을 두께별로 몇 사이 사야 하는지 계산해드릴게요.</p></div><a class="helpbtn" href="help.html" aria-label="사용 방법 보기"><span class="help-ring" aria-hidden="true"><span class="help-q">?</span></span><span class="help-label" lang="en" aria-hidden="true">How to use</span></a></header>
 
   <div class="card">
     <h2><span class="no">01</span>부재 목록</h2>
@@ -522,7 +540,6 @@
   function openApp(){ intro.hidden=true; app.hidden=false; window.scrollTo(0,0); if(location.hash!=='#calc') location.hash='calc'; }
   function openIntro(){ app.hidden=true; intro.hidden=false; if(location.hash) history.replaceState(null,'',location.pathname+location.search); }
   document.getElementById('enter').onclick=openApp;
-  document.getElementById('toIntro').onclick=openIntro; // 입력값은 그대로 둠 (다시 '시작하기'를 누르면 이어서 작업)
   window.addEventListener('hashchange',function(){ if(location.hash==='#calc') openApp(); else openIntro(); });
   if(location.hash==='#calc') openApp();
 })();
