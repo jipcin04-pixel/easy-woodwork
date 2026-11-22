@@ -537,11 +537,24 @@
 <script>
 (function(){
   var intro=document.getElementById('intro'), app=document.getElementById('app');
-  function openApp(){ intro.hidden=true; app.hidden=false; window.scrollTo(0,0); if(location.hash!=='#calc') location.hash='calc'; }
+  // 계산기 화면 주소는 #calculator. (예전 #calc는 '계산하기' 버튼 id와 같아서 브라우저가 그 버튼 위치로 내려가 버렸음)
+  var APP_HASH='#calculator';
+  function isAppHash(h){ return h===APP_HASH || h==='#calc'; }
+  function openApp(){
+    intro.hidden=true; app.hidden=false;
+    if(location.hash!==APP_HASH){ if(location.hash==='#calc') history.replaceState(null,'',APP_HASH); else location.hash=APP_HASH; }
+    window.scrollTo(0,0);
+    // 브라우저가 주소의 #위치로 스크롤하는 동작이 끝난 뒤에도 한 번 더 맨 위로
+    requestAnimationFrame(function(){ setTimeout(function(){ window.scrollTo(0,0); },0); });
+  }
   function openIntro(){ app.hidden=true; intro.hidden=false; if(location.hash) history.replaceState(null,'',location.pathname+location.search); }
   document.getElementById('enter').onclick=openApp;
-  window.addEventListener('hashchange',function(){ if(location.hash==='#calc') openApp(); else openIntro(); });
-  if(location.hash==='#calc') openApp();
+  window.addEventListener('hashchange',function(){ if(isAppHash(location.hash)) openApp(); else openIntro(); });
+  if(isAppHash(location.hash)){
+    openApp();
+    // 예전 #calc 주소로 들어온 경우 브라우저가 버튼 위치로 내리는 것까지 되돌림
+    window.addEventListener('load',function(){ window.scrollTo(0,0); });
+  }
 })();
 </script>
 </body>
