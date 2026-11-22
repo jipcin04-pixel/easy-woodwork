@@ -3,6 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#F7F7F4">
+<meta name="color-scheme" content="light">
 <title>재재목 계산기</title>
 <style>
   @font-face{font-family:"Pretendard";src:url("fonts/PretendardVariable.woff2") format("woff2-variations"),url("fonts/PretendardVariable.woff2") format("woff2");font-weight:45 920;font-style:normal;font-display:swap}
@@ -108,6 +110,11 @@
   .menu .mi.cur{font-weight:700;background:rgba(0,0,0,.14)}
   button.btn-accent{background:var(--accent);border-color:var(--accent);color:#161719;font-weight:600}
   button.btn-accent:hover{background:var(--gold2);border-color:var(--gold2);color:#161719}
+  button.btn-danger{color:var(--muted)}
+  button.btn-danger:hover{border-color:var(--warn);color:var(--warn)}
+  .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+  html{color-scheme:dark}
+  button,input,select,.menu .mi{touch-action:manipulation}
   .calcrow{display:flex;justify-content:flex-end;margin:6px 0 24px}
   button.btn-calc{padding:13px 34px;font-size:15px;font-weight:700;letter-spacing:.04em}
   #app:not([hidden]){display:flex;flex-direction:column;min-height:100vh}
@@ -171,6 +178,65 @@
   @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(226,121,58,.45)}70%{box-shadow:0 0 0 18px rgba(226,121,58,0)}100%{box-shadow:0 0 0 0 rgba(226,121,58,0)}}
   @media (prefers-reduced-motion: reduce){#intro::before,#intro::after,.cta{animation:none}}
 </style>
+<style id="theme">
+  :root{--bg:#F7F7F4;--surface:#FFFFFF;--ink:#16181D;--muted:#5B606B;--line:#D5D7DD;--line2:#E8E9ED;--placeholder:#9BA0AA;
+      --ring:#23408E;--fill:#23408E;--fill-hover:#2F52AE;--fill-ink:#FFFFFF;--kicker:#C8412B;--key:#23408E;
+      --warn:#B8321F;--tag-ink:#23408E;--tag-bg:#E6ECF8;--tag-border:#E6ECF8;
+      --menu-bg:#16181D;--menu-ink:#F7F7F4;--menu-hi:rgba(255,255,255,.14);--menu-cur:rgba(35,64,142,.7);--shadow:rgba(22,24,29,.22);
+      --ink-line:#23408E;--seal:#C8412B}
+  html{color-scheme:light}
+  body{background:var(--bg);color:var(--ink)}
+  th{color:var(--muted)} th small{color:var(--muted);opacity:.85}
+  td{border-bottom-color:var(--line2)}
+  input,select{color:var(--ink);border-bottom-color:var(--line)}
+  input:hover,select:hover{border-bottom-color:var(--muted)}
+  input:focus,select:focus{border-bottom-color:var(--ring);border-bottom-width:2px}
+  input::placeholder{color:var(--placeholder)}
+  select option{background:var(--surface);color:var(--ink)}
+  .hint,.stat span,.sub,.lead,details summary,label{color:var(--muted)}
+  .credit{color:var(--muted)} .credit b{color:var(--ink)}
+  button{color:var(--ink);border-color:var(--line)}
+  button:hover{border-color:var(--ink);color:var(--ink)}
+  button:focus-visible,.linkbtn:focus-visible{outline:2px solid var(--ring);outline-offset:2px}
+  button.small.del{color:var(--muted)} button.small.del:hover{color:var(--warn)}
+  button.btn-accent{background:var(--fill);border-color:var(--fill);color:var(--fill-ink)}
+  button.btn-accent:hover{background:var(--fill-hover);border-color:var(--fill-hover);color:var(--fill-ink)}
+  button.btn-danger{color:var(--muted)} button.btn-danger:hover{border-color:var(--warn);color:var(--warn)}
+  .linkbtn{color:var(--muted)} .linkbtn:hover{color:var(--ink)}
+  .eyebrow,.kicker,h2 .no{color:var(--kicker)}
+  .sbtn{color:var(--ink);border-bottom-color:var(--line)} .sbtn:hover{color:var(--ink);border-bottom-color:var(--muted)}
+  .caret::after,.sbtn::after{border-color:var(--muted)}
+  .caret:hover::after,.sbtn:hover::after{border-color:var(--ink)}
+  .menu{background:var(--menu-bg);color:var(--menu-ink);box-shadow:0 12px 32px var(--shadow)}
+  .menu .mi:hover,.menu .mi.hi{background:var(--menu-hi)}
+  .menu .mi.cur{background:var(--menu-cur)}
+  .tag{color:var(--tag-ink);background:var(--tag-bg);border-color:var(--tag-border)}
+  .warn{color:var(--warn);font-weight:500}
+  pre{color:var(--ink);border-color:var(--line);background:var(--surface)}
+  .stats,.stat,.card,tfoot td,.topbar{border-color:var(--line)}
+  .stat.main b,.rtable td.c-key b,.rtable td.c-key{color:var(--key)}
+  .cta{background:var(--fill);color:var(--fill-ink);animation:none;box-shadow:none}
+  .cta:hover{background:var(--fill-hover)}
+  #intro{background:var(--bg)} #intro::before,#intro::after{display:none}
+  @media (max-width:720px){
+    #parts tr{border-color:var(--line);background:var(--surface)}
+    #parts tr:focus-within{border-color:var(--ring)}
+    .rtable tr{border-bottom-color:var(--line2)}
+    #parts td::before,.rtable td[data-label]::before{color:var(--muted)}
+  }
+  .card{border-bottom:none;position:relative}
+  .card::after{content:"";display:block;height:6px;margin-top:28px;
+    background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='6' preserveAspectRatio='none'%3E%3Cpath d='M0 3.2 C 120 2.6, 240 3.6, 360 3 S 540 2.7, 600 3.3' stroke='%2323408E' stroke-width='1.6' fill='none' stroke-linecap='round'/%3E%3Cpath d='M30 3 l3 -1.4 M210 3.4 l2 1.3 M420 2.9 l3 -1.1' stroke='%2323408E' stroke-width='.8' opacity='.6'/%3E%3C/svg%3E") center/100% 6px no-repeat}
+  .topbar{border-bottom:2px solid var(--ink-line)}
+  h2 .no{display:inline-grid;place-items:center;width:28px;height:28px;border:1.5px solid var(--seal);border-radius:3px;color:var(--seal);font-size:11px;letter-spacing:0;font-weight:700;transform:rotate(-3deg)}
+  .eyebrow{color:var(--seal)}
+  h1{font-weight:700}
+  .stat.main b{font-weight:700}
+  #intro .kicker{display:inline-grid;place-items:center;padding:10px 12px;border:2px solid var(--seal);color:var(--seal);border-radius:4px;letter-spacing:.2em;transform:rotate(-4deg)}
+  #intro .big{color:var(--ink)}
+  #intro .lead::after{content:"";display:block;width:min(360px,70vw);height:6px;margin:18px auto 0;
+    background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='6' preserveAspectRatio='none'%3E%3Cpath d='M0 3.2 C 60 2.6, 120 3.6, 180 3 S 270 2.7, 300 3.3' stroke='%2323408E' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") center/100% 6px no-repeat}
+</style>
 </head>
 <body>
 <section id="intro" aria-label="재재목 계산기 시작 화면">
@@ -193,19 +259,19 @@
     <div class="row">
       <button id="addRow" class="btn-accent">+ 부재 추가</button>
       <button id="sample">예시 불러오기</button>
-      <button id="clear" class="btn-accent">전체 지우기</button>
+      <button id="clear" class="btn-danger">전체 지우기</button>
     </div>
     <p class="hint" style="margin:10px 0 0">재재목은 '자동'이면 두께에 맞춰 골라 줘요.</p>
 
     <details>
       <summary>세부 설정</summary>
       <div class="grid">
-        <div><label>두께 대패 여유 (T)</label><input type="number" id="aT" value="5" min="0" step="0.5"></div>
-        <div><label>세로(길이) 여유 (mm)</label><input type="number" id="aL" value="50" min="0" step="5"></div>
-        <div><label>가로(폭) 여유 (mm)</label><input type="number" id="aW" value="10" min="0" step="1"></div>
-        <div><label>로스율 (%)</label><input type="number" id="loss" value="25" min="0" step="5"></div>
-      <div><label>폭 집성 기준 (mm)<br><small>이 폭을 넘으면 자동 분할</small></label><input type="number" id="maxW" value="200" min="10" step="10"></div>
-      <div><label>최소 구매 폭 (mm)<br><small>엔우드 기준 5인치=127mm</small></label><input type="number" id="minW" value="127" min="1" step="1"></div>
+        <div><label for="aT">두께 대패 여유 (T)</label><input type="number" inputmode="decimal" id="aT" name="aT" value="5" min="0" step="0.5"></div>
+        <div><label for="aL">세로(길이) 여유 (mm)</label><input type="number" inputmode="numeric" id="aL" name="aL" value="50" min="0" step="5"></div>
+        <div><label for="aW">가로(폭) 여유 (mm)</label><input type="number" inputmode="numeric" id="aW" name="aW" value="10" min="0" step="1"></div>
+        <div><label for="loss">로스율 (%)</label><input type="number" inputmode="numeric" id="loss" name="loss" value="25" min="0" step="5"></div>
+        <div><label for="maxW">폭 집성 기준 (mm)<br><small>이 폭을 넘으면 자동 분할</small></label><input type="number" inputmode="numeric" id="maxW" name="maxW" value="200" min="10" step="10"></div>
+        <div><label for="minW">최소 구매 폭 (mm)<br><small>엔우드 기준 5인치=127mm</small></label><input type="number" inputmode="numeric" id="minW" name="minW" value="127" min="1" step="1"></div>
       </div>
       <p class="hint" style="margin:8px 0 0">
         · 재재목 두께: 완성 T + 대패 여유보다 두꺼운 규격 (엔우드 실측 4/4=26T, 5/4=32T, 6/4=38T, 8/4=52T)<br>
@@ -218,6 +284,7 @@
   </div>
 
   <div id="result"></div>
+  <p class="sr-only" id="announce" role="status" aria-live="polite"></p>
   <footer class="credit"><b>개발자</b> 조준혁 | cho-01000@naver.com</footer>
 </div>
 
@@ -250,19 +317,20 @@
     p=p||{n:'',w:'',l:'',t:'',q:1,s:'auto',sp:''};
     var tr=document.createElement('tr');
     var opts='<option value="auto">자동</option>'+STOCK.map(function(s){return '<option value="'+s.label+'">'+s.label+'</option>'}).join('');
-    tr.innerHTML='<td class="c-name" data-label="부재"><div class="combo"><input class="n" placeholder="부재 선택" autocomplete="off" value="'+esc(p.n)+'"><button type="button" class="caret nbtn" aria-label="부재 목록 열기" tabindex="-1"></button></div></td>'+
-      '<td data-label="가로 (mm)"><input class="num w" type="number" min="1" value="'+esc(p.w)+'"></td>'+
-      '<td data-label="세로 (mm)"><input class="num l" type="number" min="1" value="'+esc(p.l)+'"></td>'+
-      '<td data-label="두께 (T)"><input class="num t" type="number" min="1" step="0.5" value="'+esc(p.t)+'"></td>'+
-      '<td data-label="개수"><input class="num q" type="number" min="1" value="'+esc(p.q)+'" style="min-width:52px"></td>'+
-      '<td data-label="재재목"><select class="s" hidden>'+opts+'</select><button type="button" class="sbtn"></button></td>'+
-      '<td data-label="폭 집성"><input class="num sp" type="number" min="1" placeholder="자동" value="'+esc(p.sp)+'" style="min-width:56px" title="완성 폭을 몇 쪽으로 나눠 붙일지. 비워 두면 폭 집성 기준으로 자동 계산"></td>'+
-      '<td class="c-del"><button class="small del" title="삭제">✕</button></td>';
+    tr.innerHTML='<td class="c-name" data-label="부재"><div class="combo"><input class="n" name="name" aria-label="부재 이름" role="combobox" aria-autocomplete="list" aria-haspopup="listbox" aria-expanded="false" aria-controls="menu" placeholder="예: 상판…" autocomplete="off" spellcheck="false" value="'+esc(p.n)+'"><button type="button" class="caret nbtn" aria-label="부재 목록 열기" tabindex="-1"></button></div></td>'+
+      '<td data-label="가로 (mm)"><input class="num w" name="w" aria-label="가로 (mm), 완성 폭" type="number" inputmode="decimal" min="1" autocomplete="off" value="'+esc(p.w)+'"></td>'+
+      '<td data-label="세로 (mm)"><input class="num l" name="l" aria-label="세로 (mm), 결 방향" type="number" inputmode="decimal" min="1" autocomplete="off" value="'+esc(p.l)+'"></td>'+
+      '<td data-label="두께 (T)"><input class="num t" name="t" aria-label="두께 (T)" type="number" inputmode="decimal" min="1" step="0.5" autocomplete="off" value="'+esc(p.t)+'"></td>'+
+      '<td data-label="개수"><input class="num q" name="q" aria-label="개수" type="number" inputmode="numeric" min="1" autocomplete="off" value="'+esc(p.q)+'" style="min-width:52px"></td>'+
+      '<td data-label="재재목"><select class="s" hidden>'+opts+'</select><button type="button" class="sbtn" aria-haspopup="listbox" aria-expanded="false" aria-controls="menu"></button></td>'+
+      '<td data-label="폭 집성"><input class="num sp" name="sp" aria-label="폭 집성 쪽수 (비우면 자동)" type="number" inputmode="numeric" min="1" autocomplete="off" placeholder="자동" value="'+esc(p.sp)+'" style="min-width:56px" title="완성 폭을 몇 쪽으로 나눠 붙일지. 비워 두면 폭 집성 기준으로 자동 계산"></td>'+
+      '<td class="c-del"><button type="button" class="small del" title="삭제" aria-label="이 부재 삭제">✕</button></td>';
     var sel=tr.querySelector('.s'), sbtn=tr.querySelector('.sbtn'), nin=tr.querySelector('.n');
-    sel.value=p.s||'auto'; sbtn.textContent=stockLabel(sel.value);
-    sbtn.onclick=function(e){ e.stopPropagation();
+    function setStock(v){ sel.value=v; sbtn.textContent=stockLabel(v); sbtn.setAttribute('aria-label','재재목: '+stockLabel(v)); }
+    setStock(p.s||'auto');
+    sbtn.onclick=function(e){ e.stopPropagation(); if(menuFor===sbtn){ closeMenu(); return; }
       openMenu(sbtn, [{v:'auto',t:'자동'}].concat(STOCK.map(function(x){return {v:x.label,t:stockLabel(x.label)}})), sel.value,
-        function(v){ sel.value=v; sbtn.textContent=stockLabel(v); update(); }); };
+        function(v){ setStock(v); update(); }); };
     function nameMenu(all){ var q=all?'':nin.value.trim();
       var list=NAMES.filter(function(n){return !q||n.indexOf(q)>=0}).map(function(n){return {v:n,t:n}});
       if(!list.length){ closeMenu(); return; }
@@ -274,19 +342,22 @@
     tbody.appendChild(tr);
   }
 
-  // ---------- 주황 드롭다운 ----------
-  var menu=document.createElement('div'); menu.className='menu'; menu.hidden=true; document.body.appendChild(menu);
+  // ---------- 드롭다운 메뉴 ----------
+  var menu=document.createElement('div'); menu.className='menu'; menu.id='menu'; menu.setAttribute('role','listbox'); menu.hidden=true; document.body.appendChild(menu);
   var menuFor=null, menuPick=null, menuIdx=-1;
   function openMenu(anchor, items, cur, pick){
+    if(menuFor && menuFor!==anchor){ menuFor.setAttribute('aria-expanded','false'); menuFor.removeAttribute('aria-activedescendant'); }
     menuFor=anchor; menuPick=pick; menuIdx=-1;
-    menu.innerHTML=items.map(function(it,i){return '<div class="mi'+(it.v===cur?' cur':'')+'" data-v="'+esc(it.v)+'">'+esc(it.t)+'</div>'}).join('');
+    anchor.setAttribute('aria-expanded','true');
+    menu.setAttribute('aria-label', anchor.classList.contains('sbtn') ? '재재목 선택' : '부재 이름 선택');
+    menu.innerHTML=items.map(function(it,i){return '<div class="mi'+(it.v===cur?' cur':'')+'" id="mi-'+i+'" role="option" aria-selected="'+(it.v===cur)+'" data-v="'+esc(it.v)+'">'+esc(it.t)+'</div>'}).join('');
     var r=anchor.getBoundingClientRect();
     menu.style.minWidth=Math.max(r.width,140)+'px'; menu.hidden=false;
     var top=r.bottom+window.scrollY+4, mh=menu.offsetHeight;
     if(r.bottom+mh+8>window.innerHeight && r.top>mh+8) top=r.top+window.scrollY-mh-4;
     var left=Math.min(r.left, window.innerWidth-menu.offsetWidth-8); menu.style.left=(Math.max(8,left)+window.scrollX)+'px'; menu.style.top=top+'px';
   }
-  function closeMenu(){ menu.hidden=true; menuFor=null; menuPick=null; }
+  function closeMenu(){ if(menuFor){ menuFor.setAttribute('aria-expanded','false'); menuFor.removeAttribute('aria-activedescendant'); } menu.hidden=true; menuFor=null; menuPick=null; }
   menu.addEventListener('mousedown',function(e){ e.preventDefault(); });
   menu.addEventListener('click',function(e){ var it=e.target.closest('.mi'); if(!it||!menuPick) return; var f=menuPick; closeMenu(); f(it.getAttribute('data-v')); });
   document.addEventListener('click',function(e){ if(menu.hidden) return; if(menu.contains(e.target)||e.target===menuFor) return; closeMenu(); });
@@ -294,7 +365,7 @@
     if(menu.hidden) return;
     var its=menu.querySelectorAll('.mi');
     if(e.key==='Escape'){ closeMenu(); }
-    else if(e.key==='ArrowDown'||e.key==='ArrowUp'){ e.preventDefault(); menuIdx=(menuIdx+(e.key==='ArrowDown'?1:-1)+its.length)%its.length; [].forEach.call(its,function(x,i){x.classList.toggle('hi',i===menuIdx)}); }
+    else if(e.key==='ArrowDown'||e.key==='ArrowUp'){ e.preventDefault(); menuIdx=(menuIdx+(e.key==='ArrowDown'?1:-1)+its.length)%its.length; [].forEach.call(its,function(x,i){x.classList.toggle('hi',i===menuIdx)}); if(menuFor&&its[menuIdx]){ menuFor.setAttribute('aria-activedescendant',its[menuIdx].id); its[menuIdx].scrollIntoView({block:'nearest'}); } }
     else if(e.key==='Enter'&&menuIdx>=0){ e.preventDefault(); its[menuIdx].click(); }
   });
   window.addEventListener('resize',closeMenu);
@@ -333,7 +404,12 @@
     return {stock:s8,layers:n,short:false,need:need,laminated:true};
   }
 
-  var shown=false;
+  var shown=false, lastMsg='', announceTimer=null;
+  // 화면낭독기 알림: 입력 중에 매 글자마다 읽지 않도록 잠깐 멈췄을 때 한 번만, 값이 바뀌었을 때만 알림
+  function announce(msg){
+    clearTimeout(announceTimer);
+    announceTimer=setTimeout(function(){ if(msg!==lastMsg){ lastMsg=msg; $('announce').textContent=msg; } },700);
+  }
   function update(){
     save();
     var S=settings(), out=$('result');
@@ -387,7 +463,7 @@
     var txt='[재재목 주문]\n';
     groups.forEach(function(g){ txt+='- '+g.label+' : '+f1(orderSai(g.sai))+'사이, 길이 합계 '+f2(g.lenMm/FT_MM)+'ft ('+f1(g.lenMm)+'mm) — '+g.parts.join(', ')+'\n'; });
     txt+='합계 '+f1(groups.reduce(function(s,g){return s+orderSai(g.sai)},0))+'사이';
-    h+='<div class="row"><button id="copy">주문 내용 복사</button><span class="hint" id="copied"></span></div><pre>'+esc(txt)+'</pre></div>';
+    h+='<div class="row"><button id="copy">주문 내용 복사</button><span class="hint" id="copied" role="status" aria-live="polite"></span></div><pre>'+esc(txt)+'</pre></div>';
 
     h+='<div class="card"><h2><span class="no">03</span>부재별 상세</h2><div class="scroll"><table class="rtable"><thead><tr><th>부재</th><th class="r">개수</th><th class="r">완성 치수<br><small>가로×세로×T</small></th><th>재재목</th><th class="r">재단 치수<br><small>쪽당, 여유 포함</small></th><th class="r">사이</th></tr></thead><tbody>';
     list.forEach(function(it){
@@ -405,13 +481,16 @@
     h+='</div>';
 
     out.innerHTML=h;
+    announce('주문 권장량 '+f1(groups.reduce(function(s,g){return s+orderSai(g.sai)},0))+' 사이, 재재목 '+groups.length+'종');
     $('copy').onclick=function(){
       try{navigator.clipboard.writeText(txt).then(function(){$('copied').textContent='복사됐어요!'},function(){$('copied').textContent='복사 실패. 아래 글을 직접 선택해 복사하세요.'})}
       catch(e){$('copied').textContent='복사 실패. 아래 글을 직접 선택해 복사하세요.'}
     };
   }
 
-  ['aT','aL','aW','loss','maxW','minW'].forEach(function(id){$(id).addEventListener('input',update);$(id).addEventListener('change',update);});
+  // 최솟값보다 작은 값(음수 등)을 넣으면 입력을 마쳤을 때 최솟값으로 고쳐서, 화면에 보이는 값과 계산에 쓰는 값을 맞춤
+  function clampMin(el){ var v=parseFloat(el.value), m=parseFloat(el.min); if(el.value!==''&&isFinite(v)&&isFinite(m)&&v<m) el.value=m; }
+  ['aT','aL','aW','loss','maxW','minW'].forEach(function(id){$(id).addEventListener('input',update);$(id).addEventListener('change',function(){clampMin($(id));update();});});
   tbody.addEventListener('input',update);
   tbody.addEventListener('change',update);
   $('addRow').onclick=function(){addRow();update();};
@@ -424,9 +503,12 @@
     setSampleBtn(); update();
   };
   function resetAll(){tbody.innerHTML='';addRow();backup=null;shown=false;setSampleBtn();closeMenu();update();}
-  window.resetCalc=resetAll;
-  $('clear').onclick=resetAll;
-  $('calc').onclick=function(){ closeMenu(); shown=true; update(); var r=$('result'); if(r.firstChild) r.firstChild.scrollIntoView({behavior:'smooth',block:'start'}); };
+  $('clear').onclick=function(){
+    var filled=rows().some(function(r){return r.n||r.w||r.l||r.t});
+    if(filled && !confirm('입력한 부재를 모두 지울까요? 지우면 되돌릴 수 없어요.')) return;
+    resetAll();
+  };
+  $('calc').onclick=function(){ closeMenu(); shown=true; update(); var r=$('result'); if(r.firstChild){ var calm=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches; r.firstChild.scrollIntoView({behavior:calm?'auto':'smooth',block:'start'}); } };
 
   load();
   update();
@@ -438,7 +520,7 @@
   function openApp(){ intro.hidden=true; app.hidden=false; window.scrollTo(0,0); if(location.hash!=='#calc') location.hash='calc'; }
   function openIntro(){ app.hidden=true; intro.hidden=false; if(location.hash) history.replaceState(null,'',location.pathname+location.search); }
   document.getElementById('enter').onclick=openApp;
-  document.getElementById('toIntro').onclick=function(){ if(window.resetCalc) window.resetCalc(); openIntro(); };
+  document.getElementById('toIntro').onclick=openIntro; // 입력값은 그대로 둠 (다시 '시작하기'를 누르면 이어서 작업)
   window.addEventListener('hashchange',function(){ if(location.hash==='#calc') openApp(); else openIntro(); });
   if(location.hash==='#calc') openApp();
 })();
